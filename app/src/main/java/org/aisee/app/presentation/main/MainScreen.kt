@@ -27,13 +27,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,13 +55,14 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import org.aisee.app.R
 
 private val Purple = Color(0xFF9B87E8)
-private val BarBackground = Color(0xFF2A2A2A)
 
 private enum class CameraMode { Bus, Advanced, Basic }
 
 @Composable
 fun MainScreen(onOpenSettings: () -> Unit = {}) {
     var selectedMode by remember { mutableStateOf(CameraMode.Advanced) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     // Force light status bar icons (white icons on transparent bg)
     val view = LocalView.current
@@ -67,6 +73,10 @@ fun MainScreen(onOpenSettings: () -> Unit = {}) {
         onDispose {}
     }
 
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color.Transparent
+    ) { _ ->
     Box(modifier = Modifier.fillMaxSize()) {
         // Camera preview
         CameraPreview(modifier = Modifier.fillMaxSize())
@@ -106,7 +116,13 @@ fun MainScreen(onOpenSettings: () -> Unit = {}) {
                     ModeTab(
                         label = mode.name,
                         selected = mode == selectedMode,
-                        onClick = { selectedMode = mode }
+                        onClick = {
+                            if (mode == CameraMode.Bus) {
+                                scope.launch { snackbarHostState.showSnackbar("Coming Soon!") }
+                            } else {
+                                selectedMode = mode
+                            }
+                        }
                     )
                 }
             }
@@ -159,6 +175,7 @@ fun MainScreen(onOpenSettings: () -> Unit = {}) {
                 }
             }
         }
+    }
     }
 }
 
@@ -215,7 +232,7 @@ private fun CameraPreview(modifier: Modifier = Modifier) {
                     )
                 } catch (_: Exception) {
                 }
-            }, context.mainExecutor)
+            }, androidx.core.content.ContextCompat.getMainExecutor(context))
         }
     )
 }
