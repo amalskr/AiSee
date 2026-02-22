@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
+import org.aisee.app.presentation.beforestart.BeforeStartScreen
 import org.aisee.app.presentation.main.MainScreen
 import org.aisee.app.presentation.signin.ForgotPasswordScreen
 import org.aisee.app.presentation.signin.SignInScreen
@@ -25,6 +26,13 @@ fun AiSeeNavHost() {
                 SplashRoute -> NavEntry(key) {
                     SplashScreen(
                         onNavigateToMain = {
+                            backStack[0] = BeforeStartRoute
+                        }
+                    )
+                }
+                BeforeStartRoute -> NavEntry(key) {
+                    BeforeStartScreen(
+                        onAgreeAndContinue = {
                             backStack[0] = SignUpRoute
                         }
                     )
