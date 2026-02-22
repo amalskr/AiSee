@@ -8,6 +8,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import org.aisee.app.presentation.main.MainScreen
 import org.aisee.app.presentation.signup.SignUpScreen
+import org.aisee.app.presentation.signup.SignUpWithEmailScreen
 import org.aisee.app.presentation.splash.SplashScreen
 
 @Composable
@@ -32,10 +33,22 @@ fun AiSeeNavHost() {
                             backStack[0] = MainRoute
                         },
                         onContinueWithEmail = {
-                            backStack[0] = MainRoute
+                            backStack.add(SignUpWithEmailRoute)
                         },
                         onAlreadyHaveAccount = {
                             backStack[0] = MainRoute
+                        }
+                    )
+                }
+                SignUpWithEmailRoute -> NavEntry(key) {
+                    SignUpWithEmailScreen(
+                        onCreateAccount = { _, _, _ ->
+                            backStack.clear()
+                            backStack.add(MainRoute)
+                        },
+                        onSignUpWithGoogle = {
+                            backStack.clear()
+                            backStack.add(MainRoute)
                         }
                     )
                 }
