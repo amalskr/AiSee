@@ -2,6 +2,7 @@ package org.aisee.app.navigation
 
 data object SplashRoute
 data object BeforeStartRoute
+data object PrivacyAndTermsRoute
 data object SignUpRoute
 data object SignUpWithEmailRoute
 data object SignInRoute

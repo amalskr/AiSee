@@ -9,6 +9,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import org.aisee.app.presentation.beforestart.BeforeStartScreen
 import org.aisee.app.presentation.main.MainScreen
+import org.aisee.app.presentation.terms.PrivacyAndTermsScreen
 import org.aisee.app.presentation.permission.PermissionScreen
 import org.aisee.app.presentation.permission.hasRequiredPermissions
 import org.aisee.app.presentation.signin.ForgotPasswordScreen
@@ -46,6 +47,13 @@ fun AiSeeNavHost() {
                 BeforeStartRoute -> NavEntry(key) {
                     BeforeStartScreen(
                         onAgreeAndContinue = {
+                            backStack[0] = PrivacyAndTermsRoute
+                        }
+                    )
+                }
+                PrivacyAndTermsRoute -> NavEntry(key) {
+                    PrivacyAndTermsScreen(
+                        onNext = {
                             backStack[0] = SignUpRoute
                         }
                     )
