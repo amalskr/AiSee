@@ -1,4 +1,4 @@
-package org.aisee.app.ui.theme
+package org.aisee.app.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

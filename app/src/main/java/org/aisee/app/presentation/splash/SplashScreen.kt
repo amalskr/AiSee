@@ -1,4 +1,4 @@
-package org.aisee.app
+package org.aisee.app.presentation.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import org.aisee.app.R
 
 @Composable
 fun SplashScreen(onNavigateToMain: () -> Unit) {
