@@ -4,4 +4,5 @@ data object SplashRoute
 data object SignUpRoute
 data object SignUpWithEmailRoute
 data object SignInRoute
+data object ForgotPasswordRoute
 data object MainRoute

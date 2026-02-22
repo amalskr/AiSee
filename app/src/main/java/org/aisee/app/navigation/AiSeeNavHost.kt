@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import org.aisee.app.presentation.main.MainScreen
+import org.aisee.app.presentation.signin.ForgotPasswordScreen
 import org.aisee.app.presentation.signin.SignInScreen
 import org.aisee.app.presentation.signup.SignUpScreen
 import org.aisee.app.presentation.signup.SignUpWithEmailScreen
@@ -60,7 +61,14 @@ fun AiSeeNavHost() {
                             backStack.add(MainRoute)
                         },
                         onForgotPassword = {
-                            // TODO: navigate to forgot password
+                            backStack.add(ForgotPasswordRoute)
+                        }
+                    )
+                }
+                ForgotPasswordRoute -> NavEntry(key) {
+                    ForgotPasswordScreen(
+                        onResetPassword = {
+                            backStack.removeLastOrNull()
                         }
                     )
                 }
