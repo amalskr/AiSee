@@ -24,10 +24,10 @@ import kotlinx.coroutines.delay
 import org.aisee.app.R
 
 @Composable
-fun SplashScreen(onNavigateToMain: () -> Unit) {
+fun SplashScreen(onFinished: () -> Unit) {
     LaunchedEffect(Unit) {
         delay(1500)
-        onNavigateToMain()
+        onFinished()
     }
 
     Box(

@@ -40,7 +40,7 @@ fun AiSeeNavHost() {
             when (key) {
                 SplashRoute -> NavEntry(key) {
                     SplashScreen(
-                        onNavigateToMain = {
+                        onFinished = {
                             backStack[0] = BeforeStartRoute
                         }
                     )
