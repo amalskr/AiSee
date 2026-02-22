@@ -6,4 +6,5 @@ data object SignUpRoute
 data object SignUpWithEmailRoute
 data object SignInRoute
 data object ForgotPasswordRoute
+data object PermissionRoute
 data object MainRoute
