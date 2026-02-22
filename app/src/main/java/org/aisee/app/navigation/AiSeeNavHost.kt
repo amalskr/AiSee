@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import org.aisee.app.presentation.main.MainScreen
+import org.aisee.app.presentation.signin.SignInScreen
 import org.aisee.app.presentation.signup.SignUpScreen
 import org.aisee.app.presentation.signup.SignUpWithEmailScreen
 import org.aisee.app.presentation.splash.SplashScreen
@@ -36,7 +37,7 @@ fun AiSeeNavHost() {
                             backStack.add(SignUpWithEmailRoute)
                         },
                         onAlreadyHaveAccount = {
-                            backStack[0] = MainRoute
+                            backStack.add(SignInRoute)
                         }
                     )
                 }
@@ -49,6 +50,17 @@ fun AiSeeNavHost() {
                         onSignUpWithGoogle = {
                             backStack.clear()
                             backStack.add(MainRoute)
+                        }
+                    )
+                }
+                SignInRoute -> NavEntry(key) {
+                    SignInScreen(
+                        onSignIn = { _, _ ->
+                            backStack.clear()
+                            backStack.add(MainRoute)
+                        },
+                        onForgotPassword = {
+                            // TODO: navigate to forgot password
                         }
                     )
                 }
