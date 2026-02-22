@@ -35,7 +35,7 @@ fun SplashScreen(onNavigateToMain: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.aisee_icon),
                 contentDescription = "AiSee Logo",
                 modifier = Modifier.size(120.dp)
             )
