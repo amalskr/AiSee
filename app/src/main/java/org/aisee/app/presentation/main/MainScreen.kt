@@ -1,18 +1,23 @@
 package org.aisee.app.presentation.main
 
+import android.app.Activity
 import android.view.ViewGroup
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,11 +26,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,11 +39,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import org.aisee.app.R
 
 private val Purple = Color(0xFF9B87E8)
 private val BarBackground = Color(0xFF2A2A2A)
@@ -48,25 +56,50 @@ private enum class CameraMode { Bus, Advanced, Basic }
 
 @Composable
 fun MainScreen(onOpenSettings: () -> Unit = {}) {
-    var selectedMode by remember { mutableStateOf(CameraMode.Bus) }
+    var selectedMode by remember { mutableStateOf(CameraMode.Advanced) }
+
+    // Force light status bar icons (white icons on transparent bg)
+    val view = LocalView.current
+    DisposableEffect(Unit) {
+        val window = (view.context as Activity).window
+        val insetsController = WindowCompat.getInsetsController(window, view)
+        insetsController.isAppearanceLightStatusBars = false
+        onDispose {}
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Camera preview
         CameraPreview(modifier = Modifier.fillMaxSize())
 
-        // Top bar
-        Row(
+        // Top section - full width bg from top of screen
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(Color(0xCC000000))
                 .statusBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .background(BarBackground.copy(alpha = 0.85f), RoundedCornerShape(16.dp))
-                .padding(horizontal = 8.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(horizontal = 16.dp)
+                .padding(top = 8.dp, bottom = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Settings icon - top right
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_settings),
+                    contentDescription = "Settings",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable(onClick = onOpenSettings)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Mode tab bar - centered
             Row(
-                modifier = Modifier.weight(1f),
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CameraMode.entries.forEach { mode ->
@@ -77,14 +110,6 @@ fun MainScreen(onOpenSettings: () -> Unit = {}) {
                     )
                 }
             }
-            IconButton(onClick = onOpenSettings) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
         }
 
         // Bottom bar
@@ -92,7 +117,7 @@ fun MainScreen(onOpenSettings: () -> Unit = {}) {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .background(BarBackground.copy(alpha = 0.85f))
+                .background(Color(0xCC000000))
                 .navigationBarsPadding()
                 .padding(vertical = 20.dp, horizontal = 32.dp),
             horizontalArrangement = Arrangement.Center,
@@ -146,12 +171,12 @@ private fun ModeTab(label: String, selected: Boolean, onClick: () -> Unit) {
                 if (selected) Modifier.background(Purple) else Modifier
             )
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 20.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = label,
-            fontSize = 15.sp,
+            fontSize = 16.sp,
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
             color = Color.White
         )
