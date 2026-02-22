@@ -47,7 +47,7 @@ private val BarBackground = Color(0xFF2A2A2A)
 private enum class CameraMode { Bus, Advanced, Basic }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(onOpenSettings: () -> Unit = {}) {
     var selectedMode by remember { mutableStateOf(CameraMode.Bus) }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -77,7 +77,7 @@ fun MainScreen() {
                     )
                 }
             }
-            IconButton(onClick = { /* TODO: open settings */ }) {
+            IconButton(onClick = onOpenSettings) {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",

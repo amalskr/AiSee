@@ -12,6 +12,7 @@ import org.aisee.app.presentation.main.MainScreen
 import org.aisee.app.presentation.terms.PrivacyAndTermsScreen
 import org.aisee.app.presentation.permission.PermissionScreen
 import org.aisee.app.presentation.permission.hasRequiredPermissions
+import org.aisee.app.presentation.settings.SettingsScreen
 import org.aisee.app.presentation.signin.ForgotPasswordScreen
 import org.aisee.app.presentation.signin.SignInScreen
 import org.aisee.app.presentation.signup.SignUpScreen
@@ -98,7 +99,26 @@ fun AiSeeNavHost() {
                     )
                 }
                 MainRoute -> NavEntry(key) {
-                    MainScreen()
+                    MainScreen(
+                        onOpenSettings = {
+                            backStack.add(SettingsRoute)
+                        }
+                    )
+                }
+                SettingsRoute -> NavEntry(key) {
+                    SettingsScreen(
+                        userName = "User",
+                        userEmail = "user@example.com",
+                        onTermsOfUse = { /* TODO: open terms URL */ },
+                        onCheckForUpdates = { /* TODO: open store */ },
+                        onSignOut = {
+                            backStack.clear()
+                            backStack.add(SignUpRoute)
+                        },
+                        onClose = {
+                            backStack.removeLastOrNull()
+                        }
+                    )
                 }
                 else -> NavEntry(Unit) { Text("Unknown") }
             }
