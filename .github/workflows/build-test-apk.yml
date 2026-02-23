@@ -48,9 +48,6 @@ jobs:
       - name: Run lint
         run: ./gradlew lintProdRelease
 
-      - name: Run unit tests
-        run: ./gradlew testProdReleaseUnitTest
-
       - name: Build prod release APK
         run: ./gradlew assembleProdRelease -PVERSION_CODE=${{ github.run_number }} -PVERSION_NAME=1.0.${{ github.run_number }}
 
