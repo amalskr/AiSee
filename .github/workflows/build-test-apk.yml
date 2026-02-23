@@ -56,7 +56,7 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          groups: testers
+          groups: aisee-internal
           releaseNotes: "Build v1.0.${{ github.run_number }} from ${{ github.sha }}"
           file: app/build/outputs/apk/prod/release/app-prod-release.apk
 
