@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AiSee</string>
+    <!-- Auto-replaced by google-services plugin when google-services.json is present -->
+    <string name="default_web_client_id">844404996930-ihlum8djbmj20tpv8giddn3mq07197ko.apps.googleusercontent.com</string>
 </resources>
