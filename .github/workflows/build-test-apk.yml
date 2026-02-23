@@ -1,4 +1,4 @@
-name: Build Test APK
+name: Build & Distribute APK
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Lint, Test & Build APK
+    name: Lint, Test, Build & Distribute
     runs-on: ubuntu-latest
 
     steps:
@@ -33,21 +33,38 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Create keystore.properties
+        run: |
+          echo "storeFile=${{ github.workspace }}/app/keystore/aisee-key.jks" > keystore.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
+
+      - name: Decode keystore
+        run: |
+          mkdir -p app/keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/keystore/aisee-key.jks
+
       - name: Run lint
-        run: ./gradlew lintDevDebug
+        run: ./gradlew lintProdRelease
 
       - name: Run unit tests
-        run: ./gradlew testDevDebugUnitTest
+        run: ./gradlew testProdReleaseUnitTest
 
-      - name: Build dev debug APK
-        run: ./gradlew assembleDevDebug -PVERSION_CODE=${{ github.run_number }} -PVERSION_NAME=1.0.${{ github.run_number }}
+      - name: Build prod release APK
+        run: ./gradlew assembleProdRelease -PVERSION_CODE=${{ github.run_number }} -PVERSION_NAME=1.0.${{ github.run_number }}
 
-      - name: Rename APK
-        run: |
-          mv app/build/outputs/apk/dev/debug/app-dev-debug.apk app/build/outputs/apk/dev/debug/AiSee-dev-v1.0.${{ github.run_number }}.apk
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          groups: testers
+          releaseNotes: "Build v1.0.${{ github.run_number }} from ${{ github.sha }}"
+          file: app/build/outputs/apk/prod/release/app-prod-release.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AiSee-dev-v1.0.${{ github.run_number }}
-          path: app/build/outputs/apk/dev/debug/AiSee-dev-v1.0.${{ github.run_number }}.apk
+          name: AiSee-v1.0.${{ github.run_number }}
+          path: app/build/outputs/apk/prod/release/app-prod-release.apk
