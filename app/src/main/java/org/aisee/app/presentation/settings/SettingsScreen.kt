@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 
 private val CardBackground = Color(0xFF1A1A1A)
@@ -210,6 +211,19 @@ private fun SettingsActionItem(
 @Composable
 private fun SettingsDivider() {
     HorizontalDivider(color = DividerColor, thickness = 1.dp)
+}
+
+@Preview(showBackground = true, device = "id:pixel_5")
+@Composable
+private fun SettingsScreenPreview() {
+    SettingsScreen(
+        userName = "John Doe",
+        userEmail = "john@example.com",
+        onTermsOfUse = {},
+        onCheckForUpdates = {},
+        onSignOut = {},
+        onClose = {}
+    )
 }
 
 private fun getVersionName(context: Context): String {

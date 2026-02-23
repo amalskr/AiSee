@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import org.aisee.app.R
@@ -110,4 +111,10 @@ fun PermissionScreen(onPermissionsGranted: () -> Unit) {
             )
         }
     }
+}
+
+@Preview(showBackground = true, device = "id:pixel_5")
+@Composable
+private fun PermissionScreenPreview() {
+    PermissionScreen(onPermissionsGranted = {})
 }

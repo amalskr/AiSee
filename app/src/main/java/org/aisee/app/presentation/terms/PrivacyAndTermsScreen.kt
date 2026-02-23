@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.aisee.app.R
@@ -274,6 +275,12 @@ fun PrivacyAndTermsScreen(onNext: () -> Unit) {
             }
         }
     }
+}
+
+@Preview(showBackground = true, device = "id:pixel_5")
+@Composable
+private fun PrivacyAndTermsScreenPreview() {
+    PrivacyAndTermsScreen(onNext = {})
 }
 
 @Composable
