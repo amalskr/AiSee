@@ -65,3 +65,59 @@ jobs:
         with:
           name: AiSee-v1.0.${{ github.run_number }}
           path: app/build/outputs/apk/prod/release/app-prod-release.apk
+
+      - name: Notify Slack
+        if: success()
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "AiSee Android - New Build Available"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Version:*\n1.0.${{ github.run_number }}" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n${{ github.ref_name }}" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Commit:*\n`${{ github.sha }}`" },
+                    { "type": "mrkdwn", "text": "*Author:*\n${{ github.actor }}" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Release Notes:*\nBuild v1.0.${{ github.run_number }} — ${{ github.event.head_commit.message }}"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "Download from Firebase" },
+                      "url": "https://appdistribution.firebase.google.com/testerapps/org.aisee.app",
+                      "style": "primary"
+                    },
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Build" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
