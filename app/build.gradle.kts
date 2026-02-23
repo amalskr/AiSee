@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -59,6 +60,11 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.credentials)
+    implementation(libs.credentials.play.services)
+    implementation(libs.google.id.identity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
