@@ -34,20 +34,20 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run lint
-        run: ./gradlew lint
+        run: ./gradlew lintDevDebug
 
       - name: Run unit tests
-        run: ./gradlew test
+        run: ./gradlew testDevDebugUnitTest
 
-      - name: Build debug APK
-        run: ./gradlew assembleDebug -PVERSION_CODE=${{ github.run_number }} -PVERSION_NAME=1.0.${{ github.run_number }}
+      - name: Build dev debug APK
+        run: ./gradlew assembleDevDebug -PVERSION_CODE=${{ github.run_number }} -PVERSION_NAME=1.0.${{ github.run_number }}
 
       - name: Rename APK
         run: |
-          mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/AiSee-v1.0.${{ github.run_number }}.apk
+          mv app/build/outputs/apk/dev/debug/app-dev-debug.apk app/build/outputs/apk/dev/debug/AiSee-dev-v1.0.${{ github.run_number }}.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AiSee-v1.0.${{ github.run_number }}
-          path: app/build/outputs/apk/debug/AiSee-v1.0.${{ github.run_number }}.apk
+          name: AiSee-dev-v1.0.${{ github.run_number }}
+          path: app/build/outputs/apk/dev/debug/AiSee-dev-v1.0.${{ github.run_number }}.apk
