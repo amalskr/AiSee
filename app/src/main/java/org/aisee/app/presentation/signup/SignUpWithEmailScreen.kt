@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -32,7 +33,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import org.aisee.app.R
 
 private val Purple = Color(0xFF9B87E8)
@@ -79,17 +79,15 @@ fun SignUpWithEmailScreen(
 
         Text(
             text = "Create an Account",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineLarge,
             color = Color.White
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Username
         Text(
             text = "Username",
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
@@ -106,10 +104,9 @@ fun SignUpWithEmailScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Email
         Text(
             text = "Email",
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
@@ -127,10 +124,9 @@ fun SignUpWithEmailScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Password
         Text(
             text = "Password",
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
@@ -149,7 +145,6 @@ fun SignUpWithEmailScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Create Account button
         Button(
             onClick = { onCreateAccount(username, email, password) },
             modifier = Modifier
@@ -160,15 +155,13 @@ fun SignUpWithEmailScreen(
         ) {
             Text(
                 text = "Create Account",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.labelLarge,
                 color = Color.White
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // "or sign up with" divider
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -179,7 +172,7 @@ fun SignUpWithEmailScreen(
             )
             Text(
                 text = "or sign up with",
-                fontSize = 13.sp,
+                style = MaterialTheme.typography.bodySmall,
                 color = Color(0xFF8A8A8A),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
