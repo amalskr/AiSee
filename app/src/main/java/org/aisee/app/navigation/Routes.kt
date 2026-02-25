@@ -10,3 +10,4 @@ data object ForgotPasswordRoute
 data object PermissionRoute
 data object MainRoute
 data object SettingsRoute
+data class WebViewRoute(val url: String, val title: String)
