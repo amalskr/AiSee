@@ -66,54 +66,29 @@ fun BeforeStartScreen(onAgreeAndContinue: () -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Text(
-                text = "About the app",
-                fontSize = 20.sp,
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "AiSee uses your camera to scan for bus numbers. It uses your location to identify your bus stop.",
-                style = MaterialTheme.typography.bodyLarge,
-                fontSize = 18.sp,
-                color = SubtextColor
+            SectionBlock(
+                subtitle = "About the app",
+                content = "AiSee uses your camera to scan for bus numbers. It uses your location to identify your bus stop."
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "Your privacy",
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "All processing happens on your device. No photos, videos or location data are sent or shared.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = SubtextColor
+            SectionBlock(
+                subtitle = "Your privacy",
+                content = "All processing happens on your device. No photos, videos or location data are sent or shared."
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "Use with care",
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Bus detection may not always be accurate. It can fail due to lighting, distance or movement. Please confirm the bus number with the driver before boarding.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = SubtextColor
+            SectionBlock(
+                subtitle = "Use with care",
+                content = "Bus detection may not always be accurate. It can fail due to lighting, distance or movement. Please confirm the bus number with the driver before boarding."
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "By continuing, you confirm you understand the app\u2019s limitations and agree to use it safely, staying aware of your surroundings.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = SubtextColor
+            ContentText(
+                text = "By continuing, you confirm you understand the app\u2019s limitations and agree to use it safely, staying aware of your surroundings."
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -135,6 +110,33 @@ fun BeforeStartScreen(onAgreeAndContinue: () -> Unit) {
             )
         }
     }
+}
+
+@Composable
+private fun SectionBlock(subtitle: String, content: String) {
+    SubtitleText(text = subtitle)
+    Spacer(modifier = Modifier.height(8.dp))
+    ContentText(text = content)
+}
+
+@Composable
+private fun SubtitleText(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleLarge,
+        fontSize = 20.sp,
+        color = Color.White
+    )
+}
+
+@Composable
+private fun ContentText(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyLarge,
+        fontSize = 18.sp,
+        color = SubtextColor
+    )
 }
 
 @Preview(showBackground = true, device = "id:pixel_5")
