@@ -70,7 +70,7 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          groups: aisee-internal
+          groups: internal-testers
           releaseNotes: ${{ steps.release_notes.outputs.notes }}
           file: app/build/outputs/apk/prod/release/app-prod-release.apk
 
