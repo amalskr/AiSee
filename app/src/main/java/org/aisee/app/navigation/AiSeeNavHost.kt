@@ -152,7 +152,12 @@ fun AiSeeNavHost() {
                                     title = "Terms of Use"
                                 ))
                             },
-                            onCheckForUpdates = {},
+                            onCheckForUpdates = {
+                                backStack.add(WebViewRoute(
+                                    url = "https://play.google.com/store/apps/details?id=org.ahlab.aisee",
+                                    title = "Google Play"
+                                ))
+                            },
                             onSignOut = {
                                 authViewModel.signOut()
                                 backStack.clear()
