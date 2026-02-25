@@ -25,6 +25,7 @@ import org.aisee.app.presentation.main.MainScreen
 import org.aisee.app.presentation.permission.PermissionScreen
 import org.aisee.app.presentation.permission.hasRequiredPermissions
 import org.aisee.app.presentation.settings.SettingsScreen
+import org.aisee.app.presentation.settings.WebViewScreen
 import org.aisee.app.presentation.signin.ForgotPasswordScreen
 import org.aisee.app.presentation.signin.SignInScreen
 import org.aisee.app.presentation.signup.SignUpScreen
@@ -145,13 +146,27 @@ fun AiSeeNavHost() {
                         SettingsScreen(
                             userName = user?.displayName ?: "User",
                             userEmail = user?.email ?: "",
-                            onTermsOfUse = {},
+                            onTermsOfUse = {
+                                backStack.add(WebViewRoute(
+                                    url = "https://aisee.ai/terms",
+                                    title = "Terms of Use"
+                                ))
+                            },
                             onCheckForUpdates = {},
                             onSignOut = {
                                 authViewModel.signOut()
                                 backStack.clear()
                                 backStack.add(SignUpRoute)
                             },
+                            onClose = {
+                                backStack.removeLastOrNull()
+                            }
+                        )
+                    }
+                    is WebViewRoute -> NavEntry(key) {
+                        WebViewScreen(
+                            url = key.url,
+                            title = key.title,
                             onClose = {
                                 backStack.removeLastOrNull()
                             }
