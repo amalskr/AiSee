@@ -1,34 +1,32 @@
 package org.aisee.app.presentation.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import org.aisee.app.R
 
-// Set of Material typography styles to start with
+val DmSansFontFamily = FontFamily(
+    Font(R.font.dmsans_regular, FontWeight.Normal),
+    Font(R.font.dmsans_extrabold, FontWeight.ExtraBold),
+)
+
+private val defaultTypography = Typography()
+
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+    displayLarge = defaultTypography.displayLarge.copy(fontFamily = DmSansFontFamily),
+    displayMedium = defaultTypography.displayMedium.copy(fontFamily = DmSansFontFamily),
+    displaySmall = defaultTypography.displaySmall.copy(fontFamily = DmSansFontFamily),
+    headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = DmSansFontFamily),
+    headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = DmSansFontFamily),
+    headlineSmall = defaultTypography.headlineSmall.copy(fontFamily = DmSansFontFamily),
+    titleLarge = defaultTypography.titleLarge.copy(fontFamily = DmSansFontFamily),
+    titleMedium = defaultTypography.titleMedium.copy(fontFamily = DmSansFontFamily),
+    titleSmall = defaultTypography.titleSmall.copy(fontFamily = DmSansFontFamily),
+    bodyLarge = defaultTypography.bodyLarge.copy(fontFamily = DmSansFontFamily),
+    bodyMedium = defaultTypography.bodyMedium.copy(fontFamily = DmSansFontFamily),
+    bodySmall = defaultTypography.bodySmall.copy(fontFamily = DmSansFontFamily),
+    labelLarge = defaultTypography.labelLarge.copy(fontFamily = DmSansFontFamily),
+    labelMedium = defaultTypography.labelMedium.copy(fontFamily = DmSansFontFamily),
+    labelSmall = defaultTypography.labelSmall.copy(fontFamily = DmSansFontFamily),
 )
