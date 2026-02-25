@@ -10,6 +10,9 @@ import org.aisee.app.R
 
 val DmSansFontFamily = FontFamily(
     Font(R.font.dmsans_regular, FontWeight.Normal),
+    Font(R.font.dmsans_regular, FontWeight.Medium),
+    Font(R.font.dmsans_regular, FontWeight.SemiBold),
+    Font(R.font.dmsans_regular, FontWeight.Bold),
     Font(R.font.dmsans_extrabold, FontWeight.ExtraBold),
 )
 
