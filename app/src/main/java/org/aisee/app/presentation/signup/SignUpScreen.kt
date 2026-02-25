@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -59,8 +60,7 @@ fun SignUpScreen(
 
         Text(
             text = "Create an Account",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineLarge,
             color = Color.White
         )
 
@@ -88,7 +88,7 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = "Continue with Google",
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Medium,
                     color = Color.Black
                 )
@@ -119,7 +119,7 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = "Continue with Email",
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Medium,
                     color = Color.Black
                 )
@@ -143,8 +143,7 @@ fun SignUpScreen(
         ) {
             Text(
                 text = "I already have an account",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Medium,
+                style = MaterialTheme.typography.labelMedium,
                 color = Purple,
                 textAlign = TextAlign.Center
             )

@@ -17,16 +17,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import org.aisee.app.R
 
@@ -77,19 +76,16 @@ fun PermissionScreen(onPermissionsGranted: () -> Unit) {
 
         Text(
             text = "AiSee needs access to your camera to scan for buses, and your location to identify your bus stop.",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            lineHeight = 34.sp
+            style = MaterialTheme.typography.headlineMedium,
+            color = Color.White
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
             text = "All processing happens on your device. No photos, videos or location data are sent or shared.",
-            fontSize = 15.sp,
-            color = SubtextColor,
-            lineHeight = 22.sp
+            style = MaterialTheme.typography.bodyLarge,
+            color = SubtextColor
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -105,8 +101,7 @@ fun PermissionScreen(onPermissionsGranted: () -> Unit) {
         ) {
             Text(
                 text = "Allow Access",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.labelLarge,
                 color = Color.White
             )
         }

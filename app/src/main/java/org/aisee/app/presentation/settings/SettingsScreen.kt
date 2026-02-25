@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -36,10 +37,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 
 private val CardBackground = Color(0xFF1A1A1A)
 private val DividerColor = Color(0xFF2A2A2A)
@@ -91,8 +90,7 @@ fun SettingsScreen(
         // Title
         Text(
             text = "Settings",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.ExtraBold,
+            style = MaterialTheme.typography.displaySmall,
             color = Color.White
         )
 
@@ -140,8 +138,7 @@ fun SettingsScreen(
         ) {
             Text(
                 text = "Sign Out",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.labelLarge,
                 color = Color.White
             )
         }
@@ -157,14 +154,13 @@ private fun SettingsInfoItem(label: String, value: String) {
     ) {
         Text(
             text = label,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleSmall,
             color = Color.White
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyMedium,
             color = SubtextColor
         )
     }
@@ -188,14 +184,13 @@ private fun SettingsActionItem(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = label,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleSmall,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = subtitle,
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 color = SubtextColor
             )
         }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -72,8 +73,7 @@ fun ForgotPasswordScreen(
 
         Text(
             text = "Forgot Password",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineLarge,
             color = Color.White
         )
 
@@ -81,17 +81,16 @@ fun ForgotPasswordScreen(
 
         Text(
             text = "Enter your email and we'll send you a link to reset your password.",
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyMedium,
             color = FieldText,
             lineHeight = 20.sp
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Email
         Text(
             text = "Email",
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
@@ -109,7 +108,6 @@ fun ForgotPasswordScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Reset Password button
         Button(
             onClick = { onResetPassword(email) },
             modifier = Modifier
@@ -120,8 +118,7 @@ fun ForgotPasswordScreen(
         ) {
             Text(
                 text = "Reset Password",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.labelLarge,
                 color = Color.White
             )
         }
