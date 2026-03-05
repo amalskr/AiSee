@@ -125,8 +125,8 @@ fun AiSeeNavHost() {
                         }
 
                         SignUpWithEmailScreen(
-                            onCreateAccount = { username, email, password ->
-                                registrationViewModel.registerUser(username, email, password)
+                            onCreateAccount = { firstName, lastName, email, password ->
+                                registrationViewModel.registerUser(firstName, lastName, email, password)
                             },
                             onSignUpWithGoogle = {
                                 authViewModel.signInWithGoogle(context)

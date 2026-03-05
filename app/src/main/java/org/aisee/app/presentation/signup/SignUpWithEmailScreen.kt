@@ -42,13 +42,16 @@ private val FieldText = Color(0xFF8A8A8A)
 
 @Composable
 fun SignUpWithEmailScreen(
-    onCreateAccount: (username: String, email: String, password: String) -> Unit,
+    onCreateAccount: (firstName: String, lastName: String, email: String, password: String) -> Unit,
     onSignUpWithGoogle: () -> Unit,
     isLoading: Boolean = false
 ) {
-    var username by remember { mutableStateOf("") }
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    val passwordsMatch = password == confirmPassword
 
     val fieldShape = RoundedCornerShape(24.dp)
     val fieldColors = TextFieldDefaults.colors(
@@ -88,16 +91,35 @@ fun SignUpWithEmailScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Username",
+            text = "First Name",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
-            value = username,
-            onValueChange = { username = it },
-            placeholder = { Text("Username") },
+            value = firstName,
+            onValueChange = { firstName = it },
+            placeholder = { Text("First Name") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = fieldShape,
+            colors = fieldColors,
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Last Name",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        TextField(
+            value = lastName,
+            onValueChange = { lastName = it },
+            placeholder = { Text("Last Name") },
             modifier = Modifier.fillMaxWidth(),
             shape = fieldShape,
             colors = fieldColors,
@@ -145,16 +167,46 @@ fun SignUpWithEmailScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Confirm Password",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        TextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            placeholder = { Text("Confirm Password") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = fieldShape,
+            colors = fieldColors,
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            isError = confirmPassword.isNotEmpty() && !passwordsMatch
+        )
+        if (confirmPassword.isNotEmpty() && !passwordsMatch) {
+            Text(
+                text = "Passwords do not match",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color(0xFFFF6B6B),
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { onCreateAccount(username, email, password) },
+            onClick = { onCreateAccount(firstName, lastName, email, password) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(28.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Purple),
-            enabled = !isLoading
+            enabled = !isLoading && passwordsMatch && password.isNotEmpty()
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -199,7 +251,7 @@ fun SignUpWithEmailScreen(
 @Composable
 private fun SignUpWithEmailScreenPreview() {
     SignUpWithEmailScreen(
-        onCreateAccount = { _, _, _ -> },
+        onCreateAccount = { _, _, _, _ -> },
         onSignUpWithGoogle = {}
     )
 }
