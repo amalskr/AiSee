@@ -19,7 +19,7 @@ class UserRepositoryImpl(private val apiClient: AiSeeApiClient) : UserRepository
     ): Resource<ApiResponse> {
         return try {
             val request = CreateUserRequest(
-                username = email,
+                username = email.substringBefore("@"),
                 password = password,
                 email = email,
                 firstName = firstName,
