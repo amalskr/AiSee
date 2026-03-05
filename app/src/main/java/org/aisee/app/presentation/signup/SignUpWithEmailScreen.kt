@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,7 +43,8 @@ private val FieldText = Color(0xFF8A8A8A)
 @Composable
 fun SignUpWithEmailScreen(
     onCreateAccount: (username: String, email: String, password: String) -> Unit,
-    onSignUpWithGoogle: () -> Unit
+    onSignUpWithGoogle: () -> Unit,
+    isLoading: Boolean = false
 ) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -151,13 +153,22 @@ fun SignUpWithEmailScreen(
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(28.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple)
+            colors = ButtonDefaults.buttonColors(containerColor = Purple),
+            enabled = !isLoading
         ) {
-            Text(
-                text = "Create Account",
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.White
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = "Create Account",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.White
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))

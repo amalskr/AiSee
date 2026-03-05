@@ -29,6 +29,7 @@ import org.aisee.app.presentation.settings.WebViewScreen
 import org.aisee.app.presentation.signin.ForgotPasswordScreen
 import org.aisee.app.presentation.signin.SignInScreen
 import org.aisee.app.presentation.signup.SignUpScreen
+import org.aisee.app.presentation.signup.RegistrationViewModel
 import org.aisee.app.presentation.signup.SignUpWithEmailScreen
 import org.aisee.app.presentation.splash.SplashScreen
 import org.aisee.app.presentation.terms.PrivacyAndTermsScreen
@@ -105,11 +106,32 @@ fun AiSeeNavHost() {
                         )
                     }
                     SignUpWithEmailRoute -> NavEntry(key) {
+                        val registrationViewModel: RegistrationViewModel = koinViewModel()
+                        val registrationState by registrationViewModel.registrationState.collectAsState()
+
+                        LaunchedEffect(registrationState) {
+                            when (val state = registrationState) {
+                                is Resource.Success -> {
+                                    Toast.makeText(context, "Account created!", Toast.LENGTH_SHORT).show()
+                                    registrationViewModel.resetState()
+                                    navigateToMain()
+                                }
+                                is Resource.Error -> {
+                                    Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
+                                    registrationViewModel.resetState()
+                                }
+                                else -> {}
+                            }
+                        }
+
                         SignUpWithEmailScreen(
-                            onCreateAccount = { _, _, _ -> navigateToMain() },
+                            onCreateAccount = { username, email, password ->
+                                registrationViewModel.registerUser(username, email, password)
+                            },
                             onSignUpWithGoogle = {
                                 authViewModel.signInWithGoogle(context)
-                            }
+                            },
+                            isLoading = registrationState is Resource.Loading
                         )
                     }
                     SignInRoute -> NavEntry(key) {
