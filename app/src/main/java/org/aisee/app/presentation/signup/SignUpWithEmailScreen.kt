@@ -296,7 +296,11 @@ fun SignUpWithEmailScreen(
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(28.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Purple,
+                disabledContainerColor = Purple.copy(alpha = 0.4f),
+                disabledContentColor = Color.White.copy(alpha = 0.5f)
+            ),
             enabled = !isLoading && isFormValid
         ) {
             if (isLoading) {
