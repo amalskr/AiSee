@@ -1,5 +1,6 @@
 package org.aisee.app.presentation.signup
 
+import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -10,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +43,30 @@ import org.aisee.app.R
 private val Purple = Color(0xFF9B87E8)
 private val FieldBackground = Color(0xFF2A2A2A)
 private val FieldText = Color(0xFF8A8A8A)
+private val ErrorColor = Color(0xFFFF6B6B)
+
+private fun validateName(name: String): String? {
+    if (name.isEmpty()) return null
+    if (name.length < 3) return "Must be at least 3 characters"
+    if (!name.all { it.isLetter() }) return "Only letters allowed"
+    return null
+}
+
+private fun validateEmail(email: String): String? {
+    if (email.isEmpty()) return null
+    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) return "Invalid email address"
+    return null
+}
+
+private fun validatePassword(password: String): String? {
+    if (password.isEmpty()) return null
+    if (password.length < 8) return "Must be at least 8 characters"
+    if (!password.any { it.isUpperCase() }) return "Must include an uppercase letter"
+    if (!password.any { it.isLowerCase() }) return "Must include a lowercase letter"
+    if (!password.any { it.isDigit() }) return "Must include a digit"
+    if (!password.any { !it.isLetterOrDigit() }) return "Must include a symbol"
+    return null
+}
 
 @Composable
 fun SignUpWithEmailScreen(
@@ -51,7 +79,28 @@ fun SignUpWithEmailScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    val passwordsMatch = password == confirmPassword
+
+    val firstNameError by remember { derivedStateOf { validateName(firstName) } }
+    val lastNameError by remember { derivedStateOf { validateName(lastName) } }
+    val emailError by remember { derivedStateOf { validateEmail(email) } }
+    val passwordError by remember { derivedStateOf { validatePassword(password) } }
+    val confirmPasswordError by remember {
+        derivedStateOf {
+            if (confirmPassword.isEmpty()) null
+            else if (password != confirmPassword) "Passwords do not match"
+            else null
+        }
+    }
+
+    val isFormValid by remember {
+        derivedStateOf {
+            firstName.length >= 3 && firstName.all { it.isLetter() } &&
+            lastName.length >= 3 && lastName.all { it.isLetter() } &&
+            Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
+            validatePassword(password) == null &&
+            password == confirmPassword
+        }
+    }
 
     val fieldShape = RoundedCornerShape(24.dp)
     val fieldColors = TextFieldDefaults.colors(
@@ -71,6 +120,7 @@ fun SignUpWithEmailScreen(
             .fillMaxSize()
             .background(Color.Black)
             .padding(horizontal = 32.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.height(80.dp))
 
@@ -90,6 +140,7 @@ fun SignUpWithEmailScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // First Name
         Text(
             text = "First Name",
             style = MaterialTheme.typography.bodyMedium,
@@ -104,11 +155,21 @@ fun SignUpWithEmailScreen(
             modifier = Modifier.fillMaxWidth(),
             shape = fieldShape,
             colors = fieldColors,
-            singleLine = true
+            singleLine = true,
+            isError = firstNameError != null
         )
+        if (firstNameError != null) {
+            Text(
+                text = firstNameError!!,
+                style = MaterialTheme.typography.bodySmall,
+                color = ErrorColor,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Last Name
         Text(
             text = "Last Name",
             style = MaterialTheme.typography.bodyMedium,
@@ -123,11 +184,21 @@ fun SignUpWithEmailScreen(
             modifier = Modifier.fillMaxWidth(),
             shape = fieldShape,
             colors = fieldColors,
-            singleLine = true
+            singleLine = true,
+            isError = lastNameError != null
         )
+        if (lastNameError != null) {
+            Text(
+                text = lastNameError!!,
+                style = MaterialTheme.typography.bodySmall,
+                color = ErrorColor,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Email
         Text(
             text = "Email",
             style = MaterialTheme.typography.bodyMedium,
@@ -143,11 +214,21 @@ fun SignUpWithEmailScreen(
             shape = fieldShape,
             colors = fieldColors,
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            isError = emailError != null
         )
+        if (emailError != null) {
+            Text(
+                text = emailError!!,
+                style = MaterialTheme.typography.bodySmall,
+                color = ErrorColor,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Password
         Text(
             text = "Password",
             style = MaterialTheme.typography.bodyMedium,
@@ -164,11 +245,21 @@ fun SignUpWithEmailScreen(
             colors = fieldColors,
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            isError = passwordError != null
         )
+        if (passwordError != null) {
+            Text(
+                text = passwordError!!,
+                style = MaterialTheme.typography.bodySmall,
+                color = ErrorColor,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Confirm Password
         Text(
             text = "Confirm Password",
             style = MaterialTheme.typography.bodyMedium,
@@ -186,13 +277,13 @@ fun SignUpWithEmailScreen(
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            isError = confirmPassword.isNotEmpty() && !passwordsMatch
+            isError = confirmPasswordError != null
         )
-        if (confirmPassword.isNotEmpty() && !passwordsMatch) {
+        if (confirmPasswordError != null) {
             Text(
-                text = "Passwords do not match",
+                text = confirmPasswordError!!,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFFFF6B6B),
+                color = ErrorColor,
                 modifier = Modifier.padding(start = 16.dp, top = 4.dp)
             )
         }
@@ -206,7 +297,7 @@ fun SignUpWithEmailScreen(
                 .height(56.dp),
             shape = RoundedCornerShape(28.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Purple),
-            enabled = !isLoading && passwordsMatch && password.isNotEmpty()
+            enabled = !isLoading && isFormValid
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -244,6 +335,8 @@ fun SignUpWithEmailScreen(
                 color = Color(0xFF3A3A3A)
             )
         }
+
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
