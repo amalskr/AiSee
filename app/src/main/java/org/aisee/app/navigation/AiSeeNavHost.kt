@@ -29,6 +29,7 @@ import org.aisee.app.presentation.settings.WebViewScreen
 import org.aisee.app.presentation.signin.ForgotPasswordScreen
 import org.aisee.app.presentation.signin.SignInScreen
 import org.aisee.app.presentation.signup.SignUpScreen
+import org.aisee.app.presentation.common.ErrorDialog
 import org.aisee.app.presentation.signup.RegistrationViewModel
 import org.aisee.app.presentation.signup.SignUpWithEmailScreen
 import org.aisee.app.presentation.splash.SplashScreen
@@ -112,16 +113,34 @@ fun AiSeeNavHost() {
                         LaunchedEffect(registrationState) {
                             when (val state = registrationState) {
                                 is Resource.Success -> {
-                                    Toast.makeText(context, "Account created!", Toast.LENGTH_SHORT).show()
-                                    registrationViewModel.resetState()
-                                    navigateToMain()
+                                    if (state.data.status != "error") {
+                                        registrationViewModel.resetState()
+                                        navigateToMain()
+                                    }
                                 }
-                                is Resource.Error -> {
-                                    Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
-                                    registrationViewModel.resetState()
-                                }
+                                is Resource.Error -> {}
                                 else -> {}
                             }
+                        }
+
+                        val apiResponse = (registrationState as? Resource.Success)?.data
+                        val networkError = (registrationState as? Resource.Error)?.message
+
+                        if (apiResponse?.status == "error") {
+                            ErrorDialog(
+                                title = "Error ${apiResponse.httpCode ?: ""}",
+                                message = apiResponse.message ?: "Something went wrong",
+                                errorCode = apiResponse.errors?.code,
+                                onDismiss = { registrationViewModel.resetState() }
+                            )
+                        }
+
+                        if (networkError != null) {
+                            ErrorDialog(
+                                title = "Network Error",
+                                message = networkError,
+                                onDismiss = { registrationViewModel.resetState() }
+                            )
                         }
 
                         SignUpWithEmailScreen(

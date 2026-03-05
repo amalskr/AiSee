@@ -8,7 +8,7 @@ data class ApiResponse(
     val status: String? = null,
     @SerialName("http_code") val httpCode: Int? = null,
     val message: String? = null,
-    val errors: List<ApiError>? = null
+    val errors: ApiError? = null
 )
 
 @Serializable
