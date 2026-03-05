@@ -3,6 +3,7 @@ package org.aisee.app.presentation.signup
 import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -108,12 +109,19 @@ fun SignUpWithEmailScreen(
         focusedContainerColor = FieldBackground,
         unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
+        errorIndicatorColor = Color.Transparent,
+        errorContainerColor = FieldBackground,
         cursorColor = Color.White,
         focusedTextColor = Color.White,
         unfocusedTextColor = Color.White,
+        errorTextColor = Color.White,
         unfocusedPlaceholderColor = FieldText,
-        focusedPlaceholderColor = FieldText
+        focusedPlaceholderColor = FieldText,
+        errorPlaceholderColor = FieldText
     )
+
+    fun Modifier.errorBorder(hasError: Boolean): Modifier =
+        if (hasError) this.border(1.5.dp, ErrorColor, fieldShape) else this
 
     Column(
         modifier = Modifier
@@ -152,11 +160,10 @@ fun SignUpWithEmailScreen(
             value = firstName,
             onValueChange = { firstName = it },
             placeholder = { Text("First Name") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().errorBorder(firstNameError != null),
             shape = fieldShape,
             colors = fieldColors,
-            singleLine = true,
-            isError = firstNameError != null
+            singleLine = true
         )
         if (firstNameError != null) {
             Text(
@@ -181,11 +188,10 @@ fun SignUpWithEmailScreen(
             value = lastName,
             onValueChange = { lastName = it },
             placeholder = { Text("Last Name") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().errorBorder(lastNameError != null),
             shape = fieldShape,
             colors = fieldColors,
-            singleLine = true,
-            isError = lastNameError != null
+            singleLine = true
         )
         if (lastNameError != null) {
             Text(
@@ -210,12 +216,11 @@ fun SignUpWithEmailScreen(
             value = email,
             onValueChange = { email = it },
             placeholder = { Text("Email") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().errorBorder(emailError != null),
             shape = fieldShape,
             colors = fieldColors,
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            isError = emailError != null
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
         if (emailError != null) {
             Text(
@@ -240,13 +245,12 @@ fun SignUpWithEmailScreen(
             value = password,
             onValueChange = { password = it },
             placeholder = { Text("Password") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().errorBorder(passwordError != null),
             shape = fieldShape,
             colors = fieldColors,
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            isError = passwordError != null
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
         if (passwordError != null) {
             Text(
@@ -271,13 +275,12 @@ fun SignUpWithEmailScreen(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
             placeholder = { Text("Confirm Password") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().errorBorder(confirmPasswordError != null),
             shape = fieldShape,
             colors = fieldColors,
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            isError = confirmPasswordError != null
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
         if (confirmPasswordError != null) {
             Text(
