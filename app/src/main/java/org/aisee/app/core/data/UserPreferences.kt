@@ -12,14 +12,21 @@ class UserPreferences(context: Context) {
     fun saveFromResponse(response: ApiResponse) {
         val user = response.data?.user ?: return
         val tokens = response.data.tokens
+        val metadata = user.metadata
         prefs.edit()
             .putString(KEY_USER_ID, user.userId)
             .putString(KEY_USERNAME, user.username)
             .putString(KEY_EMAIL, user.email)
             .putString(KEY_ROLE, user.role)
             .putString(KEY_ORGANIZATION_ID, user.organizationId)
+            .putString(KEY_PERMISSIONS, user.permissions?.joinToString(","))
+            .putBoolean(KEY_IS_ACTIVE, metadata?.isActive ?: true)
+            .putString(KEY_CREATED_AT, metadata?.createdAt)
+            .putString(KEY_LAST_LOGIN_AT, metadata?.lastLoginAt)
             .putString(KEY_ACCESS_TOKEN, tokens?.accessToken)
             .putString(KEY_REFRESH_TOKEN, tokens?.refreshToken)
+            .putString(KEY_TOKEN_TYPE, tokens?.tokenType)
+            .putInt(KEY_EXPIRES_IN, tokens?.expiresIn ?: 0)
             .apply()
     }
 
@@ -28,8 +35,14 @@ class UserPreferences(context: Context) {
     val email: String? get() = prefs.getString(KEY_EMAIL, null)
     val role: String? get() = prefs.getString(KEY_ROLE, null)
     val organizationId: String? get() = prefs.getString(KEY_ORGANIZATION_ID, null)
+    val permissions: List<String> get() = prefs.getString(KEY_PERMISSIONS, null)?.split(",")?.filter { it.isNotEmpty() } ?: emptyList()
+    val isActive: Boolean get() = prefs.getBoolean(KEY_IS_ACTIVE, true)
+    val createdAt: String? get() = prefs.getString(KEY_CREATED_AT, null)
+    val lastLoginAt: String? get() = prefs.getString(KEY_LAST_LOGIN_AT, null)
     val accessToken: String? get() = prefs.getString(KEY_ACCESS_TOKEN, null)
     val refreshToken: String? get() = prefs.getString(KEY_REFRESH_TOKEN, null)
+    val tokenType: String? get() = prefs.getString(KEY_TOKEN_TYPE, null)
+    val expiresIn: Int get() = prefs.getInt(KEY_EXPIRES_IN, 0)
 
     val isLoggedIn: Boolean get() = accessToken != null
 
@@ -43,7 +56,13 @@ class UserPreferences(context: Context) {
         private const val KEY_EMAIL = "email"
         private const val KEY_ROLE = "role"
         private const val KEY_ORGANIZATION_ID = "organization_id"
+        private const val KEY_PERMISSIONS = "permissions"
+        private const val KEY_IS_ACTIVE = "is_active"
+        private const val KEY_CREATED_AT = "created_at"
+        private const val KEY_LAST_LOGIN_AT = "last_login_at"
         private const val KEY_ACCESS_TOKEN = "access_token"
         private const val KEY_REFRESH_TOKEN = "refresh_token"
+        private const val KEY_TOKEN_TYPE = "token_type"
+        private const val KEY_EXPIRES_IN = "expires_in"
     }
 }
