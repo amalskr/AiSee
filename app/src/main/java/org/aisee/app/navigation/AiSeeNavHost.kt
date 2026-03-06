@@ -27,6 +27,8 @@ import org.aisee.app.presentation.permission.hasRequiredPermissions
 import org.aisee.app.presentation.settings.SettingsScreen
 import org.aisee.app.presentation.settings.WebViewScreen
 import org.aisee.app.presentation.signin.ForgotPasswordScreen
+import org.aisee.app.presentation.signin.ForgotPasswordViewModel
+import org.aisee.app.presentation.signin.LoginViewModel
 import org.aisee.app.presentation.signin.SignInScreen
 import org.aisee.app.presentation.signup.SignUpScreen
 import org.aisee.app.core.data.UserPreferences
@@ -158,18 +160,96 @@ fun AiSeeNavHost() {
                         )
                     }
                     SignInRoute -> NavEntry(key) {
+                        val loginViewModel: LoginViewModel = koinViewModel()
+                        val loginState by loginViewModel.loginState.collectAsState()
+
+                        LaunchedEffect(loginState) {
+                            when (val state = loginState) {
+                                is Resource.Success -> {
+                                    if (state.data.status != "error") {
+                                        userPreferences.saveFromResponse(state.data)
+                                        loginViewModel.resetState()
+                                        navigateToMain()
+                                    }
+                                }
+                                is Resource.Error -> {}
+                                else -> {}
+                            }
+                        }
+
+                        val apiResponse = (loginState as? Resource.Success)?.data
+                        val networkError = (loginState as? Resource.Error)?.message
+
+                        if (apiResponse?.status == "error") {
+                            ErrorDialog(
+                                title = "Error ${apiResponse.httpCode ?: ""}",
+                                message = apiResponse.message ?: "Login failed",
+                                errorCode = apiResponse.errors?.code,
+                                onDismiss = { loginViewModel.resetState() }
+                            )
+                        }
+
+                        if (networkError != null) {
+                            ErrorDialog(
+                                title = "Network Error",
+                                message = networkError,
+                                onDismiss = { loginViewModel.resetState() }
+                            )
+                        }
+
                         SignInScreen(
-                            onSignIn = { _, _ -> navigateToMain() },
+                            onSignIn = { username, password ->
+                                loginViewModel.login(username, password)
+                            },
                             onForgotPassword = {
                                 backStack.add(ForgotPasswordRoute)
-                            }
+                            },
+                            isLoading = loginState is Resource.Loading
                         )
                     }
                     ForgotPasswordRoute -> NavEntry(key) {
-                        ForgotPasswordScreen(
-                            onResetPassword = {
-                                backStack.removeLastOrNull()
+                        val forgotPasswordViewModel: ForgotPasswordViewModel = koinViewModel()
+                        val forgotPasswordState by forgotPasswordViewModel.forgotPasswordState.collectAsState()
+
+                        LaunchedEffect(forgotPasswordState) {
+                            when (val state = forgotPasswordState) {
+                                is Resource.Success -> {
+                                    if (state.data.status != "error") {
+                                        Toast.makeText(context, state.data.message ?: "Check your email", Toast.LENGTH_LONG).show()
+                                        forgotPasswordViewModel.resetState()
+                                        backStack.removeLastOrNull()
+                                    }
+                                }
+                                is Resource.Error -> {}
+                                else -> {}
                             }
+                        }
+
+                        val apiResponse = (forgotPasswordState as? Resource.Success)?.data
+                        val networkError = (forgotPasswordState as? Resource.Error)?.message
+
+                        if (apiResponse?.status == "error") {
+                            ErrorDialog(
+                                title = "Error ${apiResponse.httpCode ?: ""}",
+                                message = apiResponse.message ?: "Request failed",
+                                errorCode = apiResponse.errors?.code,
+                                onDismiss = { forgotPasswordViewModel.resetState() }
+                            )
+                        }
+
+                        if (networkError != null) {
+                            ErrorDialog(
+                                title = "Network Error",
+                                message = networkError,
+                                onDismiss = { forgotPasswordViewModel.resetState() }
+                            )
+                        }
+
+                        ForgotPasswordScreen(
+                            onResetPassword = { email ->
+                                forgotPasswordViewModel.forgotPassword(email)
+                            },
+                            isLoading = forgotPasswordState is Resource.Loading
                         )
                     }
                     PermissionRoute -> NavEntry(key) {

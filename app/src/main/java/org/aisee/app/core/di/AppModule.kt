@@ -20,6 +20,8 @@ import org.aisee.app.core.data.UserRepository
 import org.aisee.app.core.data.UserRepositoryImpl
 import org.aisee.app.core.data.remote.AiSeeApiClient
 import org.aisee.app.presentation.auth.AuthViewModel
+import org.aisee.app.presentation.signin.ForgotPasswordViewModel
+import org.aisee.app.presentation.signin.LoginViewModel
 import org.aisee.app.presentation.signup.RegistrationViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
@@ -66,4 +68,6 @@ val appModule = module {
 
     viewModel { AuthViewModel(get()) }
     viewModel { RegistrationViewModel(get()) }
+    viewModel { LoginViewModel(get()) }
+    viewModel { ForgotPasswordViewModel(get()) }
 }
