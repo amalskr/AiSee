@@ -125,6 +125,7 @@ fun AiSeeNavHost() {
                                 is Resource.Success -> {
                                     if (state.data.status != "error") {
                                         userPreferences.saveFromResponse(state.data)
+                                        Toast.makeText(context, state.data.message ?: "Registration successful", Toast.LENGTH_LONG).show()
                                         registrationViewModel.resetState()
                                         navigateToMain()
                                     }
