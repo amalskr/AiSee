@@ -16,7 +16,7 @@ class AiSeeApiClient(private val httpClient: HttpClient) {
     }
 
     suspend fun createUser(request: CreateUserRequest): ApiResponse {
-        return httpClient.post("$BASE_URL/admin/users") {
+        return httpClient.post("$BASE_URL/auth/signup") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()
