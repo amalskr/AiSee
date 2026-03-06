@@ -2,6 +2,7 @@ package org.aisee.app.core.data.remote.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class ApiResponse(
@@ -52,6 +53,6 @@ data class ApiTokens(
 data class ApiError(
     val code: String? = null,
     val type: String? = null,
-    val details: String? = null,
+    val details: JsonObject? = null,
     val retryable: Boolean? = null
 )
