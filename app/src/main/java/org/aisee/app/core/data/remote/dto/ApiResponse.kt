@@ -15,7 +15,8 @@ data class ApiResponse(
 @Serializable
 data class ApiData(
     val user: ApiUser? = null,
-    val tokens: ApiTokens? = null
+    val tokens: ApiTokens? = null,
+    val message: String? = null
 )
 
 @Serializable

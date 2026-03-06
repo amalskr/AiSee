@@ -33,6 +33,7 @@ import org.aisee.app.presentation.signin.SignInScreen
 import org.aisee.app.presentation.signup.SignUpScreen
 import org.aisee.app.core.data.UserPreferences
 import org.aisee.app.presentation.common.ErrorDialog
+import org.aisee.app.presentation.common.InfoDialog
 import org.aisee.app.presentation.signup.RegistrationViewModel
 import org.koin.compose.koinInject
 import org.aisee.app.presentation.signup.SignUpWithEmailScreen
@@ -211,22 +212,19 @@ fun AiSeeNavHost() {
                         val forgotPasswordViewModel: ForgotPasswordViewModel = koinViewModel()
                         val forgotPasswordState by forgotPasswordViewModel.forgotPasswordState.collectAsState()
 
-                        LaunchedEffect(forgotPasswordState) {
-                            when (val state = forgotPasswordState) {
-                                is Resource.Success -> {
-                                    if (state.data.status != "error") {
-                                        Toast.makeText(context, state.data.message ?: "Check your email", Toast.LENGTH_LONG).show()
-                                        forgotPasswordViewModel.resetState()
-                                        backStack.removeLastOrNull()
-                                    }
-                                }
-                                is Resource.Error -> {}
-                                else -> {}
-                            }
-                        }
-
                         val apiResponse = (forgotPasswordState as? Resource.Success)?.data
                         val networkError = (forgotPasswordState as? Resource.Error)?.message
+
+                        if (apiResponse != null && apiResponse.status != "error") {
+                            InfoDialog(
+                                title = "Password Reset",
+                                message = apiResponse.data?.message ?: apiResponse.message ?: "Check your email",
+                                onDismiss = {
+                                    forgotPasswordViewModel.resetState()
+                                    backStack.removeLastOrNull()
+                                }
+                            )
+                        }
 
                         if (apiResponse?.status == "error") {
                             ErrorDialog(
