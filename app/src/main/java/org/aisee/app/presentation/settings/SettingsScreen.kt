@@ -47,8 +47,10 @@ private val SignOutRed = Color(0xFFE85C5C)
 
 @Composable
 fun SettingsScreen(
-    userName: String,
+    fullName: String,
+    username: String,
     userEmail: String,
+    phoneNumber: String,
     onTermsOfUse: () -> Unit,
     onCheckForUpdates: () -> Unit,
     onSignOut: () -> Unit,
@@ -103,9 +105,13 @@ fun SettingsScreen(
                 .background(CardBackground, RoundedCornerShape(16.dp))
                 .padding(horizontal = 20.dp, vertical = 4.dp)
         ) {
-            SettingsInfoItem(label = "Name", value = userName)
+            SettingsInfoItem(label = "Full Name", value = fullName)
+            SettingsDivider()
+            SettingsInfoItem(label = "Username", value = username)
             SettingsDivider()
             SettingsInfoItem(label = "Email", value = userEmail)
+            SettingsDivider()
+            SettingsInfoItem(label = "Phone Number", value = phoneNumber)
             SettingsDivider()
             SettingsInfoItem(label = "Version", value = versionName)
             SettingsDivider()
@@ -212,8 +218,10 @@ private fun SettingsDivider() {
 @Composable
 private fun SettingsScreenPreview() {
     SettingsScreen(
-        userName = "John Doe",
+        fullName = "John Doe",
+        username = "johndoe",
         userEmail = "john@example.com",
+        phoneNumber = "+1234567890",
         onTermsOfUse = {},
         onCheckForUpdates = {},
         onSignOut = {},

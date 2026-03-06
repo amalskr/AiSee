@@ -391,6 +391,6 @@ fun SignUpWithEmailScreen(
 private fun SignUpWithEmailScreenPreview() {
     SignUpWithEmailScreen(
         onCreateAccount = { _, _, _, _, _ -> },
-        onSignUpWithGoogle = {}
+        onSignUpWithGoogle = {},
     )
 }

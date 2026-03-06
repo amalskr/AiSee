@@ -30,6 +30,15 @@ class UserPreferences(context: Context) {
             .apply()
     }
 
+    fun saveLocalFields(fullName: String, phoneNumber: String) {
+        prefs.edit()
+            .putString(KEY_FULL_NAME, fullName)
+            .putString(KEY_PHONE_NUMBER, phoneNumber)
+            .apply()
+    }
+
+    val fullName: String? get() = prefs.getString(KEY_FULL_NAME, null)
+    val phoneNumber: String? get() = prefs.getString(KEY_PHONE_NUMBER, null)
     val userId: String? get() = prefs.getString(KEY_USER_ID, null)
     val username: String? get() = prefs.getString(KEY_USERNAME, null)
     val email: String? get() = prefs.getString(KEY_EMAIL, null)
@@ -51,6 +60,8 @@ class UserPreferences(context: Context) {
     }
 
     companion object {
+        private const val KEY_FULL_NAME = "full_name"
+        private const val KEY_PHONE_NUMBER = "phone_number"
         private const val KEY_USER_ID = "user_id"
         private const val KEY_USERNAME = "username"
         private const val KEY_EMAIL = "email"

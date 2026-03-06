@@ -11,6 +11,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -120,11 +123,19 @@ fun AiSeeNavHost() {
                         val registrationViewModel: RegistrationViewModel = koinViewModel()
                         val registrationState by registrationViewModel.registrationState.collectAsState()
 
+                        var registrationFirstName by remember { mutableStateOf("") }
+                        var registrationLastName by remember { mutableStateOf("") }
+                        var registrationPhoneNumber by remember { mutableStateOf("") }
+
                         LaunchedEffect(registrationState) {
                             when (val state = registrationState) {
                                 is Resource.Success -> {
                                     if (state.data.status != "error") {
                                         userPreferences.saveFromResponse(state.data)
+                                        userPreferences.saveLocalFields(
+                                            "$registrationFirstName $registrationLastName",
+                                            registrationPhoneNumber
+                                        )
                                         Toast.makeText(context, state.data.message ?: "Registration successful", Toast.LENGTH_LONG).show()
                                         registrationViewModel.resetState()
                                         navigateToMain()
@@ -157,6 +168,9 @@ fun AiSeeNavHost() {
 
                         SignUpWithEmailScreen(
                             onCreateAccount = { firstName, lastName, email, password, phoneNumber ->
+                                registrationFirstName = firstName
+                                registrationLastName = lastName
+                                registrationPhoneNumber = phoneNumber
                                 registrationViewModel.registerUser(firstName, lastName, email, password, phoneNumber)
                             },
                             onSignUpWithGoogle = {
@@ -272,8 +286,10 @@ fun AiSeeNavHost() {
                     SettingsRoute -> NavEntry(key) {
                         val firebaseUser = authViewModel.currentUser
                         SettingsScreen(
-                            userName = firebaseUser?.displayName ?: userPreferences.username ?: "User",
+                            fullName = userPreferences.fullName ?: firebaseUser?.displayName ?: userPreferences.username ?: "User",
+                            username = userPreferences.username ?: "",
                             userEmail = firebaseUser?.email ?: userPreferences.email ?: "",
+                            phoneNumber = userPreferences.phoneNumber ?: "-",
                             onTermsOfUse = {
                                 backStack.add(WebViewRoute(
                                     url = "https://aisee.ai/terms",
