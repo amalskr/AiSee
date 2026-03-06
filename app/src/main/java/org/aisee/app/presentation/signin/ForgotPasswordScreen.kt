@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -38,7 +39,8 @@ private val FieldText = Color(0xFF8A8A8A)
 
 @Composable
 fun ForgotPasswordScreen(
-    onResetPassword: (email: String) -> Unit
+    onResetPassword: (email: String) -> Unit,
+    isLoading: Boolean = false
 ) {
     var email by remember { mutableStateOf("") }
 
@@ -114,13 +116,26 @@ fun ForgotPasswordScreen(
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(28.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Purple,
+                disabledContainerColor = Purple.copy(alpha = 0.4f),
+                disabledContentColor = Color.White.copy(alpha = 0.5f)
+            ),
+            enabled = !isLoading && email.isNotBlank()
         ) {
-            Text(
-                text = "Reset Password",
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.White
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = "Reset Password",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.White
+                )
+            }
         }
     }
 }

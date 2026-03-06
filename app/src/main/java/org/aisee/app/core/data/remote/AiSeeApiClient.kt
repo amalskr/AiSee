@@ -8,6 +8,8 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import org.aisee.app.core.data.remote.dto.ApiResponse
 import org.aisee.app.core.data.remote.dto.CreateUserRequest
+import org.aisee.app.core.data.remote.dto.ForgotPasswordRequest
+import org.aisee.app.core.data.remote.dto.LoginRequest
 
 class AiSeeApiClient(private val httpClient: HttpClient) {
 
@@ -17,6 +19,20 @@ class AiSeeApiClient(private val httpClient: HttpClient) {
 
     suspend fun createUser(request: CreateUserRequest): ApiResponse {
         return httpClient.post("$BASE_URL/auth/signup") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun login(request: LoginRequest): ApiResponse {
+        return httpClient.post("$BASE_URL/auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun forgotPassword(request: ForgotPasswordRequest): ApiResponse {
+        return httpClient.post("$BASE_URL/auth/forgot-password") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()

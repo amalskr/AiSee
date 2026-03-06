@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -41,7 +42,8 @@ private val FieldText = Color(0xFF8A8A8A)
 @Composable
 fun SignInScreen(
     onSignIn: (usernameOrEmail: String, password: String) -> Unit,
-    onForgotPassword: () -> Unit
+    onForgotPassword: () -> Unit,
+    isLoading: Boolean = false
 ) {
     var usernameOrEmail by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -130,13 +132,26 @@ fun SignInScreen(
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(28.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Purple,
+                disabledContainerColor = Purple.copy(alpha = 0.4f),
+                disabledContentColor = Color.White.copy(alpha = 0.5f)
+            ),
+            enabled = !isLoading && usernameOrEmail.isNotBlank() && password.isNotBlank()
         ) {
-            Text(
-                text = "Sign In",
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.White
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = "Sign In",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.White
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
