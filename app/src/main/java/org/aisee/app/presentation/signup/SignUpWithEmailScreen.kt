@@ -59,6 +59,13 @@ private fun validateEmail(email: String): String? {
     return null
 }
 
+private fun validatePhoneNumber(phone: String): String? {
+    if (phone.isEmpty()) return null
+    if (!phone.all { it.isDigit() }) return "Only numbers allowed"
+    if (phone.length < 10) return "Must be at least 10 digits"
+    return null
+}
+
 private fun validatePassword(password: String): String? {
     if (password.isEmpty()) return null
     if (password.length < 8) return "Must be at least 8 characters"
@@ -71,7 +78,7 @@ private fun validatePassword(password: String): String? {
 
 @Composable
 fun SignUpWithEmailScreen(
-    onCreateAccount: (firstName: String, lastName: String, email: String, password: String) -> Unit,
+    onCreateAccount: (firstName: String, lastName: String, email: String, password: String, phoneNumber: String) -> Unit,
     onSignUpWithGoogle: () -> Unit,
     isLoading: Boolean = false
 ) {
@@ -80,10 +87,12 @@ fun SignUpWithEmailScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
 
     val firstNameError by remember { derivedStateOf { validateName(firstName) } }
     val lastNameError by remember { derivedStateOf { validateName(lastName) } }
     val emailError by remember { derivedStateOf { validateEmail(email) } }
+    val phoneNumberError by remember { derivedStateOf { validatePhoneNumber(phoneNumber) } }
     val passwordError by remember { derivedStateOf { validatePassword(password) } }
     val confirmPasswordError by remember {
         derivedStateOf {
@@ -98,6 +107,7 @@ fun SignUpWithEmailScreen(
             firstName.length >= 3 && firstName.all { it.isLetter() } &&
             lastName.length >= 3 && lastName.all { it.isLetter() } &&
             Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
+            phoneNumber.all { it.isDigit() } && phoneNumber.length >= 10 &&
             validatePassword(password) == null &&
             password == confirmPassword
         }
@@ -233,6 +243,35 @@ fun SignUpWithEmailScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Phone Number
+        Text(
+            text = "Phone Number",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        TextField(
+            value = phoneNumber,
+            onValueChange = { if (it.all { c -> c.isDigit() }) phoneNumber = it },
+            placeholder = { Text("Phone Number") },
+            modifier = Modifier.fillMaxWidth().errorBorder(phoneNumberError != null),
+            shape = fieldShape,
+            colors = fieldColors,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+        if (phoneNumberError != null) {
+            Text(
+                text = phoneNumberError!!,
+                style = MaterialTheme.typography.bodySmall,
+                color = ErrorColor,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         // Password
         Text(
             text = "Password",
@@ -294,7 +333,7 @@ fun SignUpWithEmailScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { onCreateAccount(firstName, lastName, email, password) },
+            onClick = { onCreateAccount(firstName, lastName, email, password, phoneNumber) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -351,7 +390,7 @@ fun SignUpWithEmailScreen(
 @Composable
 private fun SignUpWithEmailScreenPreview() {
     SignUpWithEmailScreen(
-        onCreateAccount = { _, _, _, _ -> },
+        onCreateAccount = { _, _, _, _, _ -> },
         onSignUpWithGoogle = {}
     )
 }

@@ -8,9 +8,8 @@ data class CreateUserRequest(
     val username: String,
     val password: String,
     val email: String,
+    val role: String = "user",
     @SerialName("first_name") val firstName: String,
     @SerialName("last_name") val lastName: String,
-    val role: String = "user",
-    @SerialName("is_active") val isActive: Boolean = true,
-    @SerialName("organization_id") val organizationId: String? = null
+    @SerialName("phone_number") val phoneNumber: String,
 )

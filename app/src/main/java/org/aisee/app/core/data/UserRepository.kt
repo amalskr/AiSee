@@ -6,7 +6,7 @@ import org.aisee.app.core.data.remote.dto.ApiResponse
 import org.aisee.app.core.data.remote.dto.CreateUserRequest
 
 interface UserRepository {
-    suspend fun registerUser(firstName: String, lastName: String, email: String, password: String): Resource<ApiResponse>
+    suspend fun registerUser(firstName: String, lastName: String, email: String, password: String, phoneNumber: String): Resource<ApiResponse>
 }
 
 class UserRepositoryImpl(private val apiClient: AiSeeApiClient) : UserRepository {
@@ -15,7 +15,8 @@ class UserRepositoryImpl(private val apiClient: AiSeeApiClient) : UserRepository
         firstName: String,
         lastName: String,
         email: String,
-        password: String
+        password: String,
+        phoneNumber: String
     ): Resource<ApiResponse> {
         return try {
             val request = CreateUserRequest(
@@ -23,7 +24,8 @@ class UserRepositoryImpl(private val apiClient: AiSeeApiClient) : UserRepository
                 password = password,
                 email = email,
                 firstName = firstName,
-                lastName = lastName
+                lastName = lastName,
+                phoneNumber = "+$phoneNumber"
             )
             val response = apiClient.createUser(request)
             Resource.Success(response)
