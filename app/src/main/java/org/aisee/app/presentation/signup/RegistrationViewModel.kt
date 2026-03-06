@@ -15,10 +15,10 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
     private val _registrationState = MutableStateFlow<Resource<ApiResponse>?>(null)
     val registrationState: StateFlow<Resource<ApiResponse>?> = _registrationState.asStateFlow()
 
-    fun registerUser(firstName: String, lastName: String, email: String, password: String) {
+    fun registerUser(firstName: String, lastName: String, email: String, password: String, phoneNumber: String) {
         viewModelScope.launch {
             _registrationState.value = Resource.Loading
-            _registrationState.value = userRepository.registerUser(firstName, lastName, email, password)
+            _registrationState.value = userRepository.registerUser(firstName, lastName, email, password, phoneNumber)
         }
     }
 
