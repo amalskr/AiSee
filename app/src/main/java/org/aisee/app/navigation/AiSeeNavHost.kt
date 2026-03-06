@@ -29,8 +29,10 @@ import org.aisee.app.presentation.settings.WebViewScreen
 import org.aisee.app.presentation.signin.ForgotPasswordScreen
 import org.aisee.app.presentation.signin.SignInScreen
 import org.aisee.app.presentation.signup.SignUpScreen
+import org.aisee.app.core.data.UserPreferences
 import org.aisee.app.presentation.common.ErrorDialog
 import org.aisee.app.presentation.signup.RegistrationViewModel
+import org.koin.compose.koinInject
 import org.aisee.app.presentation.signup.SignUpWithEmailScreen
 import org.aisee.app.presentation.splash.SplashScreen
 import org.aisee.app.presentation.terms.PrivacyAndTermsScreen
@@ -39,6 +41,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AiSeeNavHost() {
     val authViewModel: AuthViewModel = koinViewModel()
+    val userPreferences: UserPreferences = koinInject()
     val googleSignInState by authViewModel.googleSignInState.collectAsState()
     val backStack = remember { mutableStateListOf<Any>(SplashRoute) }
     val context = LocalContext.current
@@ -114,6 +117,7 @@ fun AiSeeNavHost() {
                             when (val state = registrationState) {
                                 is Resource.Success -> {
                                     if (state.data.status != "error") {
+                                        userPreferences.saveFromResponse(state.data)
                                         registrationViewModel.resetState()
                                         navigateToMain()
                                     }
@@ -183,10 +187,10 @@ fun AiSeeNavHost() {
                         )
                     }
                     SettingsRoute -> NavEntry(key) {
-                        val user = authViewModel.currentUser
+                        val firebaseUser = authViewModel.currentUser
                         SettingsScreen(
-                            userName = user?.displayName ?: "User",
-                            userEmail = user?.email ?: "",
+                            userName = firebaseUser?.displayName ?: userPreferences.username ?: "User",
+                            userEmail = firebaseUser?.email ?: userPreferences.email ?: "",
                             onTermsOfUse = {
                                 backStack.add(WebViewRoute(
                                     url = "https://aisee.ai/terms",
@@ -201,6 +205,7 @@ fun AiSeeNavHost() {
                             },
                             onSignOut = {
                                 authViewModel.signOut()
+                                userPreferences.clear()
                                 backStack.clear()
                                 backStack.add(SignUpRoute)
                             },

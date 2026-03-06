@@ -15,6 +15,7 @@ import kotlinx.serialization.json.Json
 import org.aisee.app.R
 import org.aisee.app.core.data.AuthRepository
 import org.aisee.app.core.data.FirebaseAuthRepository
+import org.aisee.app.core.data.UserPreferences
 import org.aisee.app.core.data.UserRepository
 import org.aisee.app.core.data.UserRepositoryImpl
 import org.aisee.app.core.data.remote.AiSeeApiClient
@@ -58,6 +59,8 @@ val appModule = module {
     }
 
     single { AiSeeApiClient(get()) }
+
+    single { UserPreferences(androidContext()) }
 
     single<UserRepository> { UserRepositoryImpl(get()) }
 
