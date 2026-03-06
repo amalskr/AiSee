@@ -81,7 +81,11 @@ fun AiSeeNavHost() {
                     SplashRoute -> NavEntry(key) {
                         SplashScreen(
                             onFinished = {
-                                backStack[0] = BeforeStartRoute
+                                if (userPreferences.isLoggedIn) {
+                                    navigateToMain()
+                                } else {
+                                    backStack[0] = BeforeStartRoute
+                                }
                             }
                         )
                     }
