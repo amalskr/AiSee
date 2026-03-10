@@ -86,7 +86,7 @@ fun SignInScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Username / Email",
+            text = "Username",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
@@ -95,7 +95,7 @@ fun SignInScreen(
         TextField(
             value = usernameOrEmail,
             onValueChange = { usernameOrEmail = it },
-            placeholder = { Text("Username or Email") },
+            placeholder = { Text("Username") },
             modifier = Modifier.fillMaxWidth(),
             shape = fieldShape,
             colors = fieldColors,
@@ -127,7 +127,14 @@ fun SignInScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { onSignIn(usernameOrEmail, password) },
+            onClick = {
+                val username = if (usernameOrEmail.contains("@")) {
+                    usernameOrEmail.substringBefore("@")
+                } else {
+                    usernameOrEmail
+                }
+                onSignIn(username, password)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
