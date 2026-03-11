@@ -34,8 +34,11 @@ android {
         applicationId = "org.aisee.app"
         minSdk = 24
         targetSdk = 36
-        versionCode = (findProperty("VERSION_CODE") as? String)?.toInt() ?: 1
-        versionName = (findProperty("VERSION_NAME") as? String) ?: "1.0"
+        // Version code encoding: major * 10000 + minor * 100 + patch
+        // Example: 2.0.1 = 20001, 2.1.0 = 20100, 3.0.0 = 30000
+        // This encoding is used by InAppUpdateManager to determine Flexible vs Immediate updates
+        versionCode = (findProperty("VERSION_CODE") as? String)?.toInt() ?: 10000 // 1.0.0
+        versionName = (findProperty("VERSION_NAME") as? String) ?: "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -106,6 +109,8 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.client.logging)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.play.app.update)
+    implementation(libs.play.app.update.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

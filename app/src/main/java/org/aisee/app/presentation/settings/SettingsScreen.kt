@@ -310,14 +310,8 @@ private fun getVersionName(context: Context): String {
             @Suppress("DEPRECATION")
             context.packageManager.getPackageInfo(context.packageName, 0)
         }
-        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            pInfo.longVersionCode
-        } else {
-            @Suppress("DEPRECATION")
-            pInfo.versionCode.toLong()
-        }
-        "${pInfo.versionName} ($versionCode)"
+        pInfo.versionName ?: "1.0.0"
     } catch (_: Exception) {
-        "1.0"
+        "1.0.0"
     }
 }
