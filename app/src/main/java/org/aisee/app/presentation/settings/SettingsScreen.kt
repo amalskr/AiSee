@@ -1,8 +1,10 @@
 package org.aisee.app.presentation.settings
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +46,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.activity.ComponentActivity
+import androidx.compose.material.icons.outlined.Accessibility
+import androidx.compose.runtime.DisposableEffect
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 
+private val EnabledGreen = Color(0xFF4CAF50)
+private val DisabledRed = Color(0xFFE85C5C)
 private val CardBackground = Color(0xFF1A1A1A)
 private val DividerColor = Color(0xFF2A2A2A)
 private val SubtextColor = Color(0xFF8A8A8A)
@@ -64,6 +73,19 @@ fun SettingsScreen(
     var showSignOutDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val versionName = remember { getVersionName(context) }
+    var isTalkBackOn by remember { mutableStateOf(isTalkBackEnabled(context)) }
+    val activity = context as ComponentActivity
+
+    // Re-check TalkBack status when returning from settings
+    DisposableEffect(activity) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                isTalkBackOn = isTalkBackEnabled(context)
+            }
+        }
+        activity.lifecycle.addObserver(observer)
+        onDispose { activity.lifecycle.removeObserver(observer) }
+    }
 
     if (showSignOutDialog) {
         AlertDialog(
@@ -158,6 +180,16 @@ fun SettingsScreen(
                 icon = Icons.Outlined.Upload,
                 onClick = onCheckForUpdates
             )
+            SettingsDivider()
+            SettingsActionItem(
+                label = "TalkBack - Accessibility",
+                subtitle = if (isTalkBackOn) "Enabled" else "Disabled",
+                subtitleColor = if (isTalkBackOn) EnabledGreen else DisabledRed,
+                icon = Icons.Outlined.Accessibility,
+                onClick = {
+                    context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                }
+            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -206,6 +238,7 @@ private fun SettingsInfoItem(label: String, value: String) {
 private fun SettingsActionItem(
     label: String,
     subtitle: String,
+    subtitleColor: Color = SubtextColor,
     icon: ImageVector,
     onClick: () -> Unit
 ) {
@@ -227,7 +260,7 @@ private fun SettingsActionItem(
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = SubtextColor
+                color = subtitleColor
             )
         }
         Icon(
@@ -257,6 +290,16 @@ private fun SettingsScreenPreview() {
         onSignOut = {},
         onClose = {}
     )
+}
+
+private fun isTalkBackEnabled(context: Context): Boolean {
+    val services = Settings.Secure.getString(
+        context.contentResolver,
+        Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+    ) ?: return false
+    return services.contains("com.google.android.marvin.talkback") ||
+            services.contains("com.samsung.android.accessibility.talkback") ||
+            services.contains("com.google.android.accessibility.talkback")
 }
 
 private fun getVersionName(context: Context): String {
