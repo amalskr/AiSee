@@ -55,6 +55,17 @@ class UserPreferences(context: Context) {
 
     val isLoggedIn: Boolean get() = accessToken != null
 
+    val appOpenCount: Int get() = prefs.getInt(KEY_APP_OPEN_COUNT, 0)
+    val hasShownReview: Boolean get() = prefs.getBoolean(KEY_HAS_SHOWN_REVIEW, false)
+
+    fun incrementAppOpenCount() {
+        prefs.edit().putInt(KEY_APP_OPEN_COUNT, appOpenCount + 1).apply()
+    }
+
+    fun markReviewShown() {
+        prefs.edit().putBoolean(KEY_HAS_SHOWN_REVIEW, true).apply()
+    }
+
     fun clear() {
         prefs.edit().clear().apply()
     }
@@ -75,5 +86,7 @@ class UserPreferences(context: Context) {
         private const val KEY_REFRESH_TOKEN = "refresh_token"
         private const val KEY_TOKEN_TYPE = "token_type"
         private const val KEY_EXPIRES_IN = "expires_in"
+        private const val KEY_APP_OPEN_COUNT = "app_open_count"
+        private const val KEY_HAS_SHOWN_REVIEW = "has_shown_review"
     }
 }

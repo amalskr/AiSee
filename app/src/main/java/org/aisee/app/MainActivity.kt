@@ -22,7 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import kotlinx.coroutines.launch
+import org.aisee.app.core.common.InAppReviewManager
 import org.aisee.app.core.common.InAppUpdateManager
+import org.aisee.app.core.data.UserPreferences
 import org.aisee.app.navigation.AiSeeNavHost
 import org.aisee.app.presentation.theme.AiSeeTheme
 
@@ -37,6 +39,10 @@ class MainActivity : ComponentActivity() {
 
         // Must be created before setContent (registers ActivityResultLauncher)
         inAppUpdateManager = InAppUpdateManager(this)
+
+        // In-app review: show on 3rd app open after signup
+        val userPreferences = UserPreferences(this)
+        InAppReviewManager(this, userPreferences).tryRequestReview()
 
         setContent {
             AiSeeTheme {
