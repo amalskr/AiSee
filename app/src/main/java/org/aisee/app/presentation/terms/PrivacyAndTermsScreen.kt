@@ -37,6 +37,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
@@ -218,7 +225,15 @@ fun PrivacyAndTermsScreen(onNext: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { agreed = !agreed }
+                    .semantics(mergeDescendants = true) {
+                        role = Role.Switch
+                        toggleableState = if (agreed) ToggleableState.On else ToggleableState.Off
+                        stateDescription = if (agreed) "On" else "Off"
+                        contentDescription = "I agree to the Terms of Service"
+                    },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -276,6 +291,12 @@ private fun TermsSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
             .height(28.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(trackColor)
+            .semantics {
+                role = Role.Switch
+                toggleableState = if (checked) ToggleableState.On else ToggleableState.Off
+                stateDescription = if (checked) "On" else "Off"
+                contentDescription = "I agree to the Terms of Service"
+            }
             .clickable { onCheckedChange(!checked) }
             .padding(horizontal = 3.dp),
         contentAlignment = if (checked) Alignment.CenterEnd else Alignment.CenterStart
