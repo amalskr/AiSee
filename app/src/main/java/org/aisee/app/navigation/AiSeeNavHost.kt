@@ -64,6 +64,12 @@ fun AiSeeNavHost() {
     LaunchedEffect(googleSignInState) {
         when (val state = googleSignInState) {
             is Resource.Success -> {
+                val user = state.data
+                userPreferences.saveGoogleSignIn(
+                    displayName = user.displayName,
+                    email = user.email,
+                    uid = user.uid
+                )
                 authViewModel.resetState()
                 navigateToMain()
             }

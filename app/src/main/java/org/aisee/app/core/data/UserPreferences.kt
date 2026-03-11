@@ -30,6 +30,16 @@ class UserPreferences(context: Context) {
             .apply()
     }
 
+    fun saveGoogleSignIn(displayName: String?, email: String?, uid: String) {
+        prefs.edit()
+            .putString(KEY_USER_ID, uid)
+            .putString(KEY_FULL_NAME, displayName)
+            .putString(KEY_EMAIL, email)
+            .putString(KEY_USERNAME, displayName ?: email)
+            .putString(KEY_ACCESS_TOKEN, "firebase_google_$uid")
+            .apply()
+    }
+
     fun saveLocalFields(fullName: String, phoneNumber: String) {
         prefs.edit()
             .putString(KEY_FULL_NAME, fullName)
