@@ -35,7 +35,7 @@ class UserPreferences(context: Context) {
             .putString(KEY_USER_ID, uid)
             .putString(KEY_FULL_NAME, displayName)
             .putString(KEY_EMAIL, email)
-            .putString(KEY_USERNAME, displayName ?: email)
+            .putString(KEY_USERNAME, "${email ?: displayName} (Google)")
             .putString(KEY_ACCESS_TOKEN, "firebase_google_$uid")
             .apply()
     }
