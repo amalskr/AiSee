@@ -1,7 +1,2 @@
-1. TalkBack check on splash screen
-2. TalkBack status in Settings
-3. In-App Updates (Flexible/Immediate)
-4. In-App Reviews on 3rd open
-5. Google Sign-In persistence fix
-6. Google username shows email (Google)
-7. Security fix - removed google-services.json from history
+1. Google Sign-In fix for production (SHA-1 fingerprint)
+2. CI/CD security improvement (google-services.json removed from repo)
