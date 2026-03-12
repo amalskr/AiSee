@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "42711319336-qqrost7reqv0avpb02a3od69q1671q4c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.aisee.app",
+            "certificate_hash": "486c532194b5de71014e81820cc751bdcf0e2105"
+          }
+        },
+        {
           "client_id": "42711319336-0me157afk8hqkeu38ev8mgo0uhbbfchl.apps.googleusercontent.com",
           "client_type": 3
         }
