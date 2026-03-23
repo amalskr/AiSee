@@ -288,11 +288,15 @@ fun AiSeeNavHost() {
                     }
                     SettingsRoute -> NavEntry(key) {
                         val firebaseUser = authViewModel.currentUser
+                        val rawUsername = userPreferences.username ?: ""
+                        val isGoogleUser = userPreferences.authProvider == "google"
+                        val displayUsername = rawUsername.substringBefore("@").let {
+                            if (isGoogleUser) "$it (Google)" else it
+                        }
                         SettingsScreen(
-                            fullName = userPreferences.fullName ?: firebaseUser?.displayName ?: userPreferences.username ?: "User",
-                            username = userPreferences.username ?: "",
+                            fullName = userPreferences.fullName ?: firebaseUser?.displayName ?: rawUsername ?: "User",
+                            username = displayUsername,
                             userEmail = firebaseUser?.email ?: userPreferences.email ?: "",
-                            phoneNumber = userPreferences.phoneNumber ?: "-",
                             onTermsOfUse = {
                                 backStack.add(WebViewRoute(
                                     url = "https://aisee.ai/terms",

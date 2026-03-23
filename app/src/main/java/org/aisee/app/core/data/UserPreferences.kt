@@ -30,6 +30,7 @@ class UserPreferences(context: Context) {
             .putString(KEY_REFRESH_TOKEN, tokens?.refreshToken)
             .putString(KEY_TOKEN_TYPE, tokens?.tokenType)
             .putInt(KEY_EXPIRES_IN, tokens?.expiresIn ?: 0)
+            .putString(KEY_AUTH_PROVIDER, metadata?.authProvider)
             .apply {
                 if (fullName != null) putString(KEY_FULL_NAME, fullName)
             }
@@ -68,6 +69,7 @@ class UserPreferences(context: Context) {
     val refreshToken: String? get() = prefs.getString(KEY_REFRESH_TOKEN, null)
     val tokenType: String? get() = prefs.getString(KEY_TOKEN_TYPE, null)
     val expiresIn: Int get() = prefs.getInt(KEY_EXPIRES_IN, 0)
+    val authProvider: String? get() = prefs.getString(KEY_AUTH_PROVIDER, null)
 
     val isLoggedIn: Boolean get() = accessToken != null
 
@@ -102,6 +104,7 @@ class UserPreferences(context: Context) {
         private const val KEY_REFRESH_TOKEN = "refresh_token"
         private const val KEY_TOKEN_TYPE = "token_type"
         private const val KEY_EXPIRES_IN = "expires_in"
+        private const val KEY_AUTH_PROVIDER = "auth_provider"
         private const val KEY_APP_OPEN_COUNT = "app_open_count"
         private const val KEY_HAS_SHOWN_REVIEW = "has_shown_review"
     }
