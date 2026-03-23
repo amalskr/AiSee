@@ -153,7 +153,11 @@ fun MainScreen(onOpenSettings: () -> Unit = {}) {
                     .padding(5.dp)
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.9f))
-                    .clickable { /* TODO: capture */ },
+                    .clickable { /* TODO: capture */ }
+                    .semantics {
+                        contentDescription = "Take Photo"
+                        role = Role.Button
+                    },
                 contentAlignment = Alignment.Center
             ) {}
 
@@ -167,7 +171,11 @@ fun MainScreen(onOpenSettings: () -> Unit = {}) {
                         .size(56.dp)
                         .clip(CircleShape)
                         .background(Purple)
-                        .clickable { /* TODO: mic */ },
+                        .clickable { /* TODO: mic */ }
+                        .semantics {
+                            contentDescription = "Record Question"
+                            role = Role.Button
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
