@@ -90,7 +90,7 @@ fun AiSeeNavHost() {
                                 if (userPreferences.isLoggedIn) {
                                     navigateToMain()
                                 } else {
-                                    backStack[0] = BeforeStartRoute
+                                    backStack[0] = PrivacyAndTermsRoute
                                 }
                             }
                         )
