@@ -36,7 +36,8 @@ val appModule = module {
         FirebaseAuthRepository(
             firebaseAuth = get(),
             credentialManager = get(),
-            webClientId = androidContext().getString(R.string.default_web_client_id)
+            webClientId = androidContext().getString(R.string.default_web_client_id),
+            apiClient = get()
         )
     }
 

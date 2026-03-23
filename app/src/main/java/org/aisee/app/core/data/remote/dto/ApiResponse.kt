@@ -29,7 +29,9 @@ data class ApiUser(
     val role: String? = null,
     @SerialName("organization_id") val organizationId: String? = null,
     val permissions: List<String>? = null,
-    val metadata: UserMetadata? = null
+    val metadata: UserMetadata? = null,
+    @SerialName("first_name") val firstName: String? = null,
+    @SerialName("last_name") val lastName: String? = null
 )
 
 @Serializable
@@ -38,7 +40,11 @@ data class UserMetadata(
     @SerialName("is_active") val isActive: Boolean? = null,
     @SerialName("created_at") val createdAt: String? = null,
     @SerialName("last_login_at") val lastLoginAt: String? = null,
-    @SerialName("schema_version") val schemaVersion: String? = null
+    @SerialName("schema_version") val schemaVersion: String? = null,
+    @SerialName("auth_provider") val authProvider: String? = null,
+    @SerialName("provider_user_id") val providerUserId: String? = null,
+    @SerialName("is_new_user") val isNewUser: Boolean? = null,
+    @SerialName("avatar_url") val avatarUrl: String? = null
 )
 
 @Serializable

@@ -64,14 +64,11 @@ fun AiSeeNavHost() {
     LaunchedEffect(googleSignInState) {
         when (val state = googleSignInState) {
             is Resource.Success -> {
-                val user = state.data
-                userPreferences.saveGoogleSignIn(
-                    displayName = user.displayName,
-                    email = user.email,
-                    uid = user.uid
-                )
-                authViewModel.resetState()
-                navigateToMain()
+                if (state.data.status != "error") {
+                    userPreferences.saveFromResponse(state.data)
+                    authViewModel.resetState()
+                    navigateToMain()
+                }
             }
             is Resource.Error -> {
                 Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
@@ -332,6 +329,16 @@ fun AiSeeNavHost() {
                 }
             }
         )
+
+        val googleApiResponse = (googleSignInState as? Resource.Success)?.data
+        if (googleApiResponse?.status == "error") {
+            ErrorDialog(
+                title = "Error ${googleApiResponse.httpCode ?: ""}",
+                message = googleApiResponse.message ?: "Google Sign-In failed",
+                errorCode = googleApiResponse.errors?.code,
+                onDismiss = { authViewModel.resetState() }
+            )
+        }
 
         if (googleSignInState is Resource.Loading) {
             Box(

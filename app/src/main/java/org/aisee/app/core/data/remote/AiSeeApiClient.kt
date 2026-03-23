@@ -9,6 +9,7 @@ import io.ktor.http.contentType
 import org.aisee.app.core.data.remote.dto.ApiResponse
 import org.aisee.app.core.data.remote.dto.CreateUserRequest
 import org.aisee.app.core.data.remote.dto.ForgotPasswordRequest
+import org.aisee.app.core.data.remote.dto.GoogleSignInRequest
 import org.aisee.app.core.data.remote.dto.LoginRequest
 
 class AiSeeApiClient(private val httpClient: HttpClient) {
@@ -26,6 +27,13 @@ class AiSeeApiClient(private val httpClient: HttpClient) {
 
     suspend fun login(request: LoginRequest): ApiResponse {
         return httpClient.post("$BASE_URL/auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun googleSignIn(request: GoogleSignInRequest): ApiResponse {
+        return httpClient.post("$BASE_URL/auth/social/google") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()

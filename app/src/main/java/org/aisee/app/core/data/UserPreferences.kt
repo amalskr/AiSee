@@ -13,6 +13,9 @@ class UserPreferences(context: Context) {
         val user = response.data?.user ?: return
         val tokens = response.data.tokens
         val metadata = user.metadata
+        val fullName = listOfNotNull(user.firstName, user.lastName)
+            .joinToString(" ")
+            .ifEmpty { null }
         prefs.edit()
             .putString(KEY_USER_ID, user.userId)
             .putString(KEY_USERNAME, user.username)
@@ -27,6 +30,9 @@ class UserPreferences(context: Context) {
             .putString(KEY_REFRESH_TOKEN, tokens?.refreshToken)
             .putString(KEY_TOKEN_TYPE, tokens?.tokenType)
             .putInt(KEY_EXPIRES_IN, tokens?.expiresIn ?: 0)
+            .apply {
+                if (fullName != null) putString(KEY_FULL_NAME, fullName)
+            }
             .apply()
     }
 
