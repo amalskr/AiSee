@@ -163,8 +163,6 @@ fun SettingsScreen(
             SettingsDivider()
             SettingsInfoItem(label = "Email", value = userEmail)
             SettingsDivider()
-            SettingsInfoItem(label = "Phone Number", value = phoneNumber)
-            SettingsDivider()
             SettingsInfoItem(label = "Version", value = versionName)
             SettingsDivider()
             SettingsActionItem(
