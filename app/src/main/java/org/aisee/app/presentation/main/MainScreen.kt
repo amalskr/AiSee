@@ -45,6 +45,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -188,6 +192,10 @@ private fun ModeTab(label: String, selected: Boolean, onClick: () -> Unit) {
                 if (selected) Modifier.background(Purple) else Modifier
             )
             .clickable(onClick = onClick)
+            .semantics {
+                contentDescription = "$label Mode"
+                role = Role.Button
+            }
             .padding(horizontal = 20.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
