@@ -46,9 +46,16 @@ private val FieldBackground = Color(0xFF2A2A2A)
 private val FieldText = Color(0xFF8A8A8A)
 private val ErrorColor = Color(0xFFFF6B6B)
 
-private fun validateName(name: String): String? {
+private fun validateFirstName(name: String): String? {
     if (name.isEmpty()) return null
-    if (name.length < 3) return "Must be at least 3 characters"
+    if (name.length < 2) return "Must be at least 2 characters"
+    if (!name.all { it.isLetter() }) return "Only letters allowed"
+    return null
+}
+
+private fun validateLastName(name: String): String? {
+    if (name.isEmpty()) return null
+    if (name.length < 2) return "Must be at least 2 characters"
     if (!name.all { it.isLetter() }) return "Only letters allowed"
     return null
 }
@@ -89,8 +96,8 @@ fun SignUpWithEmailScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
 
-    val firstNameError by remember { derivedStateOf { validateName(firstName) } }
-    val lastNameError by remember { derivedStateOf { validateName(lastName) } }
+    val firstNameError by remember { derivedStateOf { validateFirstName(firstName) } }
+    val lastNameError by remember { derivedStateOf { validateLastName(lastName) } }
     val emailError by remember { derivedStateOf { validateEmail(email) } }
     val phoneNumberError by remember { derivedStateOf { validatePhoneNumber(phoneNumber) } }
     val passwordError by remember { derivedStateOf { validatePassword(password) } }
@@ -104,8 +111,8 @@ fun SignUpWithEmailScreen(
 
     val isFormValid by remember {
         derivedStateOf {
-            firstName.length >= 3 && firstName.all { it.isLetter() } &&
-            lastName.length >= 3 && lastName.all { it.isLetter() } &&
+            firstName.length >= 2 && firstName.all { it.isLetter() } &&
+            lastName.length >= 2 && lastName.all { it.isLetter() } &&
             Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
             phoneNumber.all { it.isDigit() } && phoneNumber.length >= 10 &&
             validatePassword(password) == null &&
