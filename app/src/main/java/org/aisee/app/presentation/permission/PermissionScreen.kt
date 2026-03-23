@@ -24,7 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import org.aisee.app.R
@@ -51,9 +53,8 @@ fun PermissionScreen(onPermissionsGranted: () -> Unit) {
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { results ->
-        val cameraGranted = results[Manifest.permission.CAMERA] == true
-        val locationGranted = results[Manifest.permission.ACCESS_FINE_LOCATION] == true
-        if (cameraGranted && locationGranted) {
+        val allGranted = requiredPermissions.all { results[it] == true }
+        if (allGranted) {
             onPermissionsGranted()
         }
     }
@@ -69,21 +70,35 @@ fun PermissionScreen(onPermissionsGranted: () -> Unit) {
         Image(
             painter = painterResource(id = R.drawable.aisee_icon),
             contentDescription = "AiSee Logo",
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(72.dp)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "AiSee needs access to your camera to scan for buses, and your location to identify your bus stop.",
-            style = MaterialTheme.typography.headlineMedium,
+            text = "AiSee needs access to your camera and microphone to describe the photos you take and answer your questions.",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Normal,
+                lineHeight = 34.sp
+            ),
             color = Color.White
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "All processing happens on your device. No photos, videos or location data are sent or shared.",
+            text = "Your location is used to identify your bus stop when scanning for buses.",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Normal,
+                lineHeight = 34.sp
+            ),
+            color = Color.White
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Location data is not sent or shared outside your phone.",
             style = MaterialTheme.typography.bodyLarge,
             color = SubtextColor
         )
@@ -94,7 +109,7 @@ fun PermissionScreen(onPermissionsGranted: () -> Unit) {
             onClick = { permissionLauncher.launch(requiredPermissions) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp)
+                .padding(bottom = 48.dp)
                 .height(56.dp),
             shape = RoundedCornerShape(28.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Purple)
