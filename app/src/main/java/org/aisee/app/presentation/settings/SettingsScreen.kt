@@ -1,8 +1,10 @@
 package org.aisee.app.presentation.settings
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,25 +24,36 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Upload
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
+import androidx.activity.ComponentActivity
+import androidx.compose.material.icons.outlined.Accessibility
+import androidx.compose.runtime.DisposableEffect
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 
+private val EnabledGreen = Color(0xFF4CAF50)
+private val DisabledRed = Color(0xFFE85C5C)
 private val CardBackground = Color(0xFF1A1A1A)
 private val DividerColor = Color(0xFF2A2A2A)
 private val SubtextColor = Color(0xFF8A8A8A)
@@ -48,15 +61,54 @@ private val SignOutRed = Color(0xFFE85C5C)
 
 @Composable
 fun SettingsScreen(
-    userName: String,
+    fullName: String,
+    username: String,
     userEmail: String,
     onTermsOfUse: () -> Unit,
     onCheckForUpdates: () -> Unit,
     onSignOut: () -> Unit,
     onClose: () -> Unit
 ) {
+    var showSignOutDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val versionName = remember { getVersionName(context) }
+    var isTalkBackOn by remember { mutableStateOf(isTalkBackEnabled(context)) }
+    val activity = context as ComponentActivity
+
+    // Re-check TalkBack status when returning from settings
+    DisposableEffect(activity) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                isTalkBackOn = isTalkBackEnabled(context)
+            }
+        }
+        activity.lifecycle.addObserver(observer)
+        onDispose { activity.lifecycle.removeObserver(observer) }
+    }
+
+    if (showSignOutDialog) {
+        AlertDialog(
+            onDismissRequest = { showSignOutDialog = false },
+            title = { Text("Sign Out") },
+            text = { Text("Are you sure you want to sign out?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showSignOutDialog = false
+                    onSignOut()
+                }) {
+                    Text("Yes", color = SignOutRed)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showSignOutDialog = false }) {
+                    Text("Cancel")
+                }
+            },
+            containerColor = CardBackground,
+            titleContentColor = Color.White,
+            textContentColor = SubtextColor
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -91,8 +143,7 @@ fun SettingsScreen(
         // Title
         Text(
             text = "Settings",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.ExtraBold,
+            style = MaterialTheme.typography.displaySmall,
             color = Color.White
         )
 
@@ -105,7 +156,9 @@ fun SettingsScreen(
                 .background(CardBackground, RoundedCornerShape(16.dp))
                 .padding(horizontal = 20.dp, vertical = 4.dp)
         ) {
-            SettingsInfoItem(label = "Name", value = userName)
+            SettingsInfoItem(label = "Full Name", value = fullName)
+            SettingsDivider()
+            SettingsInfoItem(label = "Username", value = username)
             SettingsDivider()
             SettingsInfoItem(label = "Email", value = userEmail)
             SettingsDivider()
@@ -124,13 +177,23 @@ fun SettingsScreen(
                 icon = Icons.Outlined.Upload,
                 onClick = onCheckForUpdates
             )
+            SettingsDivider()
+            SettingsActionItem(
+                label = "TalkBack - Accessibility",
+                subtitle = if (isTalkBackOn) "Enabled" else "Disabled",
+                subtitleColor = if (isTalkBackOn) EnabledGreen else DisabledRed,
+                icon = Icons.Outlined.Accessibility,
+                onClick = {
+                    context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                }
+            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
         // Sign Out button
         Button(
-            onClick = onSignOut,
+            onClick = { showSignOutDialog = true },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 32.dp)
@@ -140,8 +203,7 @@ fun SettingsScreen(
         ) {
             Text(
                 text = "Sign Out",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.labelLarge,
                 color = Color.White
             )
         }
@@ -157,14 +219,13 @@ private fun SettingsInfoItem(label: String, value: String) {
     ) {
         Text(
             text = label,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleSmall,
             color = Color.White
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyMedium,
             color = SubtextColor
         )
     }
@@ -174,6 +235,7 @@ private fun SettingsInfoItem(label: String, value: String) {
 private fun SettingsActionItem(
     label: String,
     subtitle: String,
+    subtitleColor: Color = SubtextColor,
     icon: ImageVector,
     onClick: () -> Unit
 ) {
@@ -188,15 +250,14 @@ private fun SettingsActionItem(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = label,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleSmall,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = subtitle,
-                fontSize = 14.sp,
-                color = SubtextColor
+                style = MaterialTheme.typography.bodyMedium,
+                color = subtitleColor
             )
         }
         Icon(
@@ -217,13 +278,24 @@ private fun SettingsDivider() {
 @Composable
 private fun SettingsScreenPreview() {
     SettingsScreen(
-        userName = "John Doe",
+        fullName = "John Doe",
+        username = "johndoe",
         userEmail = "john@example.com",
         onTermsOfUse = {},
         onCheckForUpdates = {},
         onSignOut = {},
         onClose = {}
     )
+}
+
+private fun isTalkBackEnabled(context: Context): Boolean {
+    val services = Settings.Secure.getString(
+        context.contentResolver,
+        Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+    ) ?: return false
+    return services.contains("com.google.android.marvin.talkback") ||
+            services.contains("com.samsung.android.accessibility.talkback") ||
+            services.contains("com.google.android.accessibility.talkback")
 }
 
 private fun getVersionName(context: Context): String {
@@ -234,14 +306,8 @@ private fun getVersionName(context: Context): String {
             @Suppress("DEPRECATION")
             context.packageManager.getPackageInfo(context.packageName, 0)
         }
-        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            pInfo.longVersionCode
-        } else {
-            @Suppress("DEPRECATION")
-            pInfo.versionCode.toLong()
-        }
-        "${pInfo.versionName} ($versionCode)"
+        pInfo.versionName ?: "1.0.0"
     } catch (_: Exception) {
-        "1.0"
+        "1.0.0"
     }
 }

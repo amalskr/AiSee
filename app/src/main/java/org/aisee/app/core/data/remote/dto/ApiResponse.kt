@@ -1,0 +1,64 @@
+package org.aisee.app.core.data.remote.dto
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+
+@Serializable
+data class ApiResponse(
+    val status: String? = null,
+    @SerialName("http_code") val httpCode: Int? = null,
+    val message: String? = null,
+    val data: ApiData? = null,
+    val errors: ApiError? = null
+)
+
+@Serializable
+data class ApiData(
+    val user: ApiUser? = null,
+    val tokens: ApiTokens? = null,
+    val message: String? = null
+)
+
+@Serializable
+data class ApiUser(
+    @SerialName("user_id") val userId: String? = null,
+    val username: String? = null,
+    @SerialName("password_hash") val passwordHash: String? = null,
+    val email: String? = null,
+    val role: String? = null,
+    @SerialName("organization_id") val organizationId: String? = null,
+    val permissions: List<String>? = null,
+    val metadata: UserMetadata? = null,
+    @SerialName("first_name") val firstName: String? = null,
+    @SerialName("last_name") val lastName: String? = null
+)
+
+@Serializable
+data class UserMetadata(
+    @SerialName("organization_id") val organizationId: String? = null,
+    @SerialName("is_active") val isActive: Boolean? = null,
+    @SerialName("created_at") val createdAt: String? = null,
+    @SerialName("last_login_at") val lastLoginAt: String? = null,
+    @SerialName("schema_version") val schemaVersion: String? = null,
+    @SerialName("auth_provider") val authProvider: String? = null,
+    @SerialName("provider_user_id") val providerUserId: String? = null,
+    @SerialName("is_new_user") val isNewUser: Boolean? = null,
+    @SerialName("avatar_url") val avatarUrl: String? = null
+)
+
+@Serializable
+data class ApiTokens(
+    @SerialName("access_token") val accessToken: String? = null,
+    @SerialName("refresh_token") val refreshToken: String? = null,
+    @SerialName("token_type") val tokenType: String? = null,
+    @SerialName("expires_in") val expiresIn: Int? = null
+)
+
+@Serializable
+data class ApiError(
+    val code: String? = null,
+    val type: String? = null,
+    val details: JsonObject? = null,
+    val retryable: Boolean? = null
+)

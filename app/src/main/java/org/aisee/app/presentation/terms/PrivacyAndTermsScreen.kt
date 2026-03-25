@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -36,6 +37,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
@@ -76,8 +84,7 @@ fun PrivacyAndTermsScreen(onNext: () -> Unit) {
         ) {
             Text(
                 text = "Privacy and Terms",
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineMedium,
                 color = Color.White
             )
             Image(
@@ -98,95 +105,80 @@ fun PrivacyAndTermsScreen(onNext: () -> Unit) {
 
             Text(
                 text = "Quick overview",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleLarge,
                 color = Color.White
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Safety
             Text(
                 text = "Safety",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "Do not use AiSee to cross streets, as a substitute mobility aid, or for medical or emergency advice. Do not share sensitive personal or financial info.",
-                fontSize = 14.sp,
-                color = SubtextColor,
-                lineHeight = 21.sp
+                style = MaterialTheme.typography.bodyMedium,
+                color = SubtextColor
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Data collection and use
             Text(
                 text = "Data collection and use",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "We collect your account and device info, photos, videos, audio, cookies, and analytics. Third-party AI providers may process this data for visual assistance.",
-                fontSize = 14.sp,
-                color = SubtextColor,
-                lineHeight = 21.sp
+                style = MaterialTheme.typography.bodyMedium,
+                color = SubtextColor
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = "We use this data to provide you with our Services, and improve them. We do not sell your data to third parties.",
-                fontSize = 14.sp,
-                color = SubtextColor,
-                lineHeight = 21.sp
+                style = MaterialTheme.typography.bodyMedium,
+                color = SubtextColor
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Your rights
             Text(
                 text = "Your rights",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "You can access, correct, or delete your personal data at any time through your account settings. You may also request a copy of the data we hold about you.",
-                fontSize = 14.sp,
-                color = SubtextColor,
-                lineHeight = 21.sp
+                style = MaterialTheme.typography.bodyMedium,
+                color = SubtextColor
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Changes to terms
             Text(
                 text = "Changes to terms",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "We may update these terms from time to time. If we make significant changes, we will notify you through the app or via email before the changes take effect.",
-                fontSize = 14.sp,
-                color = SubtextColor,
-                lineHeight = 21.sp
+                style = MaterialTheme.typography.bodyMedium,
+                color = SubtextColor
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 text = "This is not a legally binding overview. Please read the Terms of Service linked below to understand the rules and responsibilities that apply when using AiSee.",
-                fontSize = 14.sp,
-                color = SubtextColor,
-                lineHeight = 21.sp
+                style = MaterialTheme.typography.bodyMedium,
+                color = SubtextColor
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -199,7 +191,6 @@ fun PrivacyAndTermsScreen(onNext: () -> Unit) {
                 .padding(horizontal = 32.dp)
                 .padding(bottom = 24.dp)
         ) {
-            // Read Full Terms of Service button
             val readEnabled = !isAtBottom
             Box(
                 modifier = Modifier
@@ -226,23 +217,29 @@ fun PrivacyAndTermsScreen(onNext: () -> Unit) {
             ) {
                 Text(
                     text = "Read Full Terms of Service",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.labelMedium,
                     color = if (readEnabled) Purple else DisabledTextGray
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Agree toggle row
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { agreed = !agreed }
+                    .semantics(mergeDescendants = true) {
+                        role = Role.Switch
+                        toggleableState = if (agreed) ToggleableState.On else ToggleableState.Off
+                        stateDescription = if (agreed) "On" else "Off"
+                        contentDescription = "I agree to the Terms of Service"
+                    },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "I agree to the Terms of Service",
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = Color.White
                 )
                 TermsSwitch(
@@ -253,7 +250,6 @@ fun PrivacyAndTermsScreen(onNext: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Next button
             Button(
                 onClick = onNext,
                 enabled = agreed,
@@ -269,8 +265,7 @@ fun PrivacyAndTermsScreen(onNext: () -> Unit) {
             ) {
                 Text(
                     text = "Next",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }
@@ -296,6 +291,12 @@ private fun TermsSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
             .height(28.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(trackColor)
+            .semantics {
+                role = Role.Switch
+                toggleableState = if (checked) ToggleableState.On else ToggleableState.Off
+                stateDescription = if (checked) "On" else "Off"
+                contentDescription = "I agree to the Terms of Service"
+            }
             .clickable { onCheckedChange(!checked) }
             .padding(horizontal = 3.dp),
         contentAlignment = if (checked) Alignment.CenterEnd else Alignment.CenterStart

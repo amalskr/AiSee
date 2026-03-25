@@ -10,13 +10,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.aisee.app.core.common.Resource
 import org.aisee.app.core.data.AuthRepository
+import org.aisee.app.core.data.remote.dto.ApiResponse
 
 class AuthViewModel(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val _googleSignInState = MutableStateFlow<Resource<FirebaseUser>?>(null)
-    val googleSignInState: StateFlow<Resource<FirebaseUser>?> = _googleSignInState.asStateFlow()
+    private val _googleSignInState = MutableStateFlow<Resource<ApiResponse>?>(null)
+    val googleSignInState: StateFlow<Resource<ApiResponse>?> = _googleSignInState.asStateFlow()
 
     val currentUser: FirebaseUser?
         get() = authRepository.currentUser

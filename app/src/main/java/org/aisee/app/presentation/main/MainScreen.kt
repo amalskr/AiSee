@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -44,11 +45,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -149,7 +153,11 @@ fun MainScreen(onOpenSettings: () -> Unit = {}) {
                     .padding(5.dp)
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.9f))
-                    .clickable { /* TODO: capture */ },
+                    .clickable { /* TODO: capture */ }
+                    .semantics {
+                        contentDescription = "Take Photo"
+                        role = Role.Button
+                    },
                 contentAlignment = Alignment.Center
             ) {}
 
@@ -163,7 +171,11 @@ fun MainScreen(onOpenSettings: () -> Unit = {}) {
                         .size(56.dp)
                         .clip(CircleShape)
                         .background(Purple)
-                        .clickable { /* TODO: mic */ },
+                        .clickable { /* TODO: mic */ }
+                        .semantics {
+                            contentDescription = "Record Question"
+                            role = Role.Button
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -188,12 +200,16 @@ private fun ModeTab(label: String, selected: Boolean, onClick: () -> Unit) {
                 if (selected) Modifier.background(Purple) else Modifier
             )
             .clickable(onClick = onClick)
+            .semantics {
+                contentDescription = "$label Mode"
+                role = Role.Button
+            }
             .padding(horizontal = 20.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = label,
-            fontSize = 16.sp,
+            style = MaterialTheme.typography.labelLarge,
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
             color = Color.White
         )

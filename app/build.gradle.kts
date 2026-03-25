@@ -1,7 +1,16 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.kotlin.serialization)
+}
+
+val keystoreProperties = Properties().apply {
+    val file = rootProject.file("keystore.properties")
+    if (file.exists()) load(file.inputStream())
 }
 
 android {
@@ -12,25 +21,54 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file(keystoreProperties.getProperty("storeFile", ""))
+            storePassword = keystoreProperties.getProperty("storePassword", "")
+            keyAlias = keystoreProperties.getProperty("keyAlias", "")
+            keyPassword = keystoreProperties.getProperty("keyPassword", "")
+        }
+    }
+
     defaultConfig {
         applicationId = "org.aisee.app"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        // Version code encoding: major * 10000 + minor * 100 + patch
+        // Example: 2.0.1 = 20001, 2.1.0 = 20100, 3.0.0 = 30000
+        // This encoding is used by InAppUpdateManager to determine Flexible vs Immediate updates
+        versionCode = (findProperty("VERSION_CODE") as? String)?.toInt() ?: 10000 // 1.0.0
+        versionName = (findProperty("VERSION_NAME") as? String) ?: "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    flavorDimensions += "environment"
+
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            versionNameSuffix = "-dev"
+        }
+        create("prod") {
+            dimension = "environment"
+        }
+    }
+
     buildTypes {
+        debug {
+            isDebuggable = true
+        }
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -62,9 +100,19 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.crashlytics.ktx)
     implementation(libs.credentials)
     implementation(libs.credentials.play.services)
     implementation(libs.google.id.identity)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.play.app.update)
+    implementation(libs.play.app.update.ktx)
+    implementation(libs.play.review)
+    implementation(libs.play.review.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

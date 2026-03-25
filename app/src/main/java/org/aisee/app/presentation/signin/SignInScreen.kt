@@ -14,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -31,7 +33,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import org.aisee.app.R
 
 private val Purple = Color(0xFF9B87E8)
@@ -41,7 +42,8 @@ private val FieldText = Color(0xFF8A8A8A)
 @Composable
 fun SignInScreen(
     onSignIn: (usernameOrEmail: String, password: String) -> Unit,
-    onForgotPassword: () -> Unit
+    onForgotPassword: () -> Unit,
+    isLoading: Boolean = false
 ) {
     var usernameOrEmail by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -77,17 +79,15 @@ fun SignInScreen(
 
         Text(
             text = "Welcome Back",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineLarge,
             color = Color.White
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Username / Email
         Text(
-            text = "Username / Email",
-            fontSize = 14.sp,
+            text = "Username",
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
@@ -95,7 +95,7 @@ fun SignInScreen(
         TextField(
             value = usernameOrEmail,
             onValueChange = { usernameOrEmail = it },
-            placeholder = { Text("Username or Email") },
+            placeholder = { Text("Username") },
             modifier = Modifier.fillMaxWidth(),
             shape = fieldShape,
             colors = fieldColors,
@@ -105,10 +105,9 @@ fun SignInScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Password
         Text(
             text = "Password",
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
@@ -127,31 +126,47 @@ fun SignInScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Sign In button
         Button(
-            onClick = { onSignIn(usernameOrEmail, password) },
+            onClick = {
+                val username = if (usernameOrEmail.contains("@")) {
+                    usernameOrEmail.substringBefore("@")
+                } else {
+                    usernameOrEmail
+                }
+                onSignIn(username, password)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(28.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Purple,
+                disabledContainerColor = Purple.copy(alpha = 0.4f),
+                disabledContentColor = Color.White.copy(alpha = 0.5f)
+            ),
+            enabled = !isLoading && usernameOrEmail.isNotBlank() && password.isNotBlank()
         ) {
-            Text(
-                text = "Sign In",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = "Sign In",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.White
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Forgot Password
         Text(
             text = "Forgot Password?",
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.labelSmall,
             color = Purple,
-            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .clickable(onClick = onForgotPassword)

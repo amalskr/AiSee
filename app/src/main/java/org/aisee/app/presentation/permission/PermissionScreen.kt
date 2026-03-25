@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,8 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import org.aisee.app.R
 
@@ -52,9 +53,8 @@ fun PermissionScreen(onPermissionsGranted: () -> Unit) {
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { results ->
-        val cameraGranted = results[Manifest.permission.CAMERA] == true
-        val locationGranted = results[Manifest.permission.ACCESS_FINE_LOCATION] == true
-        if (cameraGranted && locationGranted) {
+        val allGranted = requiredPermissions.all { results[it] == true }
+        if (allGranted) {
             onPermissionsGranted()
         }
     }
@@ -70,26 +70,37 @@ fun PermissionScreen(onPermissionsGranted: () -> Unit) {
         Image(
             painter = painterResource(id = R.drawable.aisee_icon),
             contentDescription = "AiSee Logo",
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(72.dp)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "AiSee needs access to your camera to scan for buses, and your location to identify your bus stop.",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            lineHeight = 34.sp
+            text = "AiSee needs access to your camera and microphone to describe the photos you take and answer your questions.",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Normal,
+                lineHeight = 34.sp
+            ),
+            color = Color.White
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "All processing happens on your device. No photos, videos or location data are sent or shared.",
-            fontSize = 15.sp,
-            color = SubtextColor,
-            lineHeight = 22.sp
+            text = "Your location is used to identify your bus stop when scanning for buses.",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Normal,
+                lineHeight = 34.sp
+            ),
+            color = Color.White
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Location data is not sent or shared outside your phone.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = SubtextColor
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -98,15 +109,14 @@ fun PermissionScreen(onPermissionsGranted: () -> Unit) {
             onClick = { permissionLauncher.launch(requiredPermissions) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp)
+                .padding(bottom = 48.dp)
                 .height(56.dp),
             shape = RoundedCornerShape(28.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Purple)
         ) {
             Text(
                 text = "Allow Access",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.labelLarge,
                 color = Color.White
             )
         }

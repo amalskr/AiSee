@@ -1,0 +1,11 @@
+package org.aisee.app.core.data.remote.dto
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class LoginRequest(
+    val username: String,
+    val password: String,
+    @SerialName("remember_me") val rememberMe: String = "true"
+)
