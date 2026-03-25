@@ -1,2 +1,2 @@
-1. Google Sign-In fix for production (SHA-1 fingerprint)
-2. CI/CD security improvement (google-services.json removed from repo)
+1. Called Google Sign-In API 
+2. Added accessibility semantics
